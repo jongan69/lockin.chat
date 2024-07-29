@@ -70,7 +70,7 @@ export default function LinkTree() {
         </div>
         <br />
         <Button link='https://moonshot.money?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.purple} />
-        <Button link='https://www.youtube.com/@jonngan?sub_confirmation=1' icon={<Image src={trading} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
+        <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={trading} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
         <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={lockLogo} height={h} alt="DEXSCREENER" />} name='DEXSCREENER' backgroundcolor={variables.githubColor} />
         <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.twitterColor} />
       </Container>
