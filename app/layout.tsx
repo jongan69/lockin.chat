@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Jons Link Tree",
-  description: "A linktree built in Nextjs",
+  title: "Lockin Chat",
+  description: "Lock tf in",
 };
 
 export default function RootLayout({
