@@ -11,7 +11,7 @@ interface Params {
 
 export async function GET(request: NextRequest) {
     const api_key = process.env.HELIUS_API_KEY ?? "";
-    const url = `https://mainnet.helius-rpc.com/?api-key=59516a79-eec8-4ff4-a505-63ea684999b5`;
+    const url = `https://mainnet.helius-rpc.com/?api-key=${api_key}`;
     const mintAddress = "8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5";
 
     let allOwners = new Set();
