@@ -1,0 +1,16 @@
+export default {
+  textColor: '#fff',
+  facebookColor: '#4267B2',
+  instagramColor: '#C13584',
+  red: '#FF0000',
+  whatsappColor: '#4AC959',
+  youtubeColor: '#FF585D',
+  pink: '#b30b7b',
+  purple: '#530bb3',
+  linkedinColor: '#2867B2',
+  twitterColor: '#1DA1F2',
+  githubColor: '#24292e',
+  discordColor: '#4267B2',
+  opt1Color: '#000',
+  opt2Color: '#fff',
+}
