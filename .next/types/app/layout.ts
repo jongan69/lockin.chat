@@ -1,4 +1,4 @@
-// File: /Users/jonathangan/Desktop/Code/javascript/next-linktree/app/layout.tsx
+// File: /Users/jonathangan/Desktop/Code/javascript/lockin.chat/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
