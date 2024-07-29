@@ -51,7 +51,7 @@ export default function LinkTree() {
       <Container>
         
         <br />
-        <div className='text-center text-xl bg-slate-800'>
+        <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
         <Header picture="profile.png" title='Lockin Chat' subtitle={`Its Time To Lock TF In 🔒`} />
           <p>Total Lockers: {holderdata?.totalHolders}</p>
           <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots}</p>
