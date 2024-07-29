@@ -1,3 +1,7 @@
 {
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/api/price/route": "app/api/price/route.js",
+  "/api/oxtickerdata/route": "app/api/oxtickerdata/route.js",
+  "/api/oxpricedata/route": "app/api/oxpricedata/route.js",
+  "/api/heliusmarketdata/route": "app/api/heliusmarketdata/route.js"
 }

@@ -26,9 +26,9 @@ function MoneyBill({ texture }: any) {
 }
 
 // RainingMoneyBackground component
-export default function RainingMoneyBackground() {
+export default function RainingLockersBackground(props: { holders: any }) {
   const moneyTexture = useLoader(TextureLoader, 'lock.png');
-  const billsCount = 200; // Number of money bills you want to rain
+  const billsCount = props.holders ?? 200; // Number of money bills you want to rain
 
   return (
     <>

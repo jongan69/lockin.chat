@@ -1,5 +1,5 @@
 "use client"
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Container } from './styles';
 import Image from 'next/image'
 import Button from '../Button/index.js';
@@ -8,50 +8,75 @@ import Header from '../Header';
 
 // Money
 import { Canvas } from '@react-three/fiber';
-import RainingMoneyBackground from '../Three/RainingLockins'
+import RainingLockersBackground from '../Three/RainingLockins'
 
 // Logos
-// import AppsIcon from '@material-ui/icons/Apps';
-import PieChartIcon from '@mui/icons-material/PieChart';
-import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-
-// Other Logos for links
 const trading = require('../../images/trade.svg');
-const kickLogo = require('../../images/kick.svg');
-const mediumLogo = require('../../images/medium.svg');
-const twitterLogo = require('../../images/twitter.svg');
 const bonkLogo = require('../../images/bonk.svg');
 const lockLogo = require('../../images/logo.svg');
 const moonLogo = require('../../images/moon.svg');
-// const discordLogo = require('../../images/discord.svg');
-// import ArticleIcon from '@mui/icons-material/Article';
-// const instagramLogo = require('../../images/instagram.svg');
-// const linkedinLogo = require('../../images/linkedin-in.svg');
-// const tiktokLogo = require('../../images/tiktok.svg');
-// const whatsappLogo = require('../../images/whatsapp.svg');
 
 
 export default function LinkTree() {
+  const [juppricedata, setJupPriceData] = useState();
+  const [oxtickerdata, setOxTickerData] = useState();
+  const [oxpricedata, setOxPriceData] = useState();
+  const [holderdata, setHolderData] = useState();
+
+  async function fetchData() {
+    const pricedata1 = await fetch('/api/price').then(data => data.json());
+    const oxtickerdata1 = await fetch('/api/oxtickerdata').then(data => data.json());;
+    const oxpricedata1 = await fetch('/api/oxpricedata').then(data => data.json());;
+    const heliusholderdata = await fetch('/api/heliusmarketdata').then(data => data.json());;
+    setJupPriceData(pricedata1);
+    setOxTickerData(oxtickerdata1);
+    setOxPriceData(oxpricedata1);
+    setHolderData(heliusholderdata);
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, []);
 
   const h = 20;
   function Loading() {
     return <h2>🌀 Loading...</h2>;
   }
 
+  // Get Token price from Jupiter
+
+  // Get Token Data from 
   return (
     <Suspense fallback={<Loading />}>
       <Container>
+        
+        <br />
+        <div className='text-center text-xl bg-slate-800'>
         <Header picture="profile.png" title='Lockin Chat' subtitle={`Its Time To Lock TF In 🔒`} />
-        <Button link='https://moonshot.money?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot"/>} name='Moonshot' backgroundcolor={variables.purple} />
-        <Button link='https://www.youtube.com/@jonngan?sub_confirmation=1' icon={<Image src={trading} height={h} alt="Raydium"/>} name='Raydium' backgroundcolor={variables.discordColor} />
+          <p>Total Lockers: {holderdata?.totalHolders}</p>
+          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots}</p>
+          <br />
+          <p>Jupiter Price: ${juppricedata?.price.toFixed(3)}</p>
+          <br />
+          <p>OX Market Price: ${oxtickerdata?.marketprice}</p>
+          <br />
+          <p>OX 24 Hour High: ${oxpricedata?.high24h}</p>
+          <br />
+          <p>OX 24 Hour Low: ${oxpricedata?.low24h}</p>
+          <br />
+          <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3)}</p>
+          <br />
+          <p>OX Open Interest: {oxpricedata?.openInterest}</p>
+        </div>
+        <br />
+        <Button link='https://moonshot.money?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.purple} />
+        <Button link='https://www.youtube.com/@jonngan?sub_confirmation=1' icon={<Image src={trading} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
         <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={lockLogo} height={h} alt="DEXSCREENER" />} name='DEXSCREENER' backgroundcolor={variables.githubColor} />
-        <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h}/>} name='Bonk Buy' backgroundcolor={variables.twitterColor} />
+        <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.twitterColor} />
       </Container>
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
         <Canvas>
-          <RainingMoneyBackground />
+          <RainingLockersBackground holders={holderdata?.totalHolders}/>
         </Canvas>
       </div>
     </Suspense>
