@@ -39,7 +39,6 @@ export default function LinkTree() {
 
   useEffect(() => {
     fetchData()
-    console.log(holderscan)
   }, []);
 
   const h = 20;
@@ -56,14 +55,14 @@ export default function LinkTree() {
         
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
-        <Header picture="profile.png" title='Lockin Chat' subtitle={`Its Time To Lock TF In 🔒`} />
+        <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
           <p>Total Lockers: {holderscan?.currentHolders.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <p>Holders Over 10 USD: {holderscan?.holdersOver10USD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <br/>
           <p>MarketCap: ${holderscan?.marketCap.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <br/>
-          <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKIN'S</p>
+          <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKINS</p>
           <br />
           <p>Jupiter Price: ${juppricedata?.price.toFixed(3)}</p>
           <p>OX Market Price: ${oxtickerdata?.marketprice}</p>
