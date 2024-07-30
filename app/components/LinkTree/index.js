@@ -22,20 +22,24 @@ export default function LinkTree() {
   const [oxtickerdata, setOxTickerData] = useState();
   const [oxpricedata, setOxPriceData] = useState();
   const [holderdata, setHolderData] = useState();
+  const [holderscan, setHolderScan] = useState();
 
   async function fetchData() {
     const pricedata1 = await fetch('/api/price').then(data => data.json());
-    const oxtickerdata1 = await fetch('/api/oxtickerdata').then(data => data.json());;
-    const oxpricedata1 = await fetch('/api/oxpricedata').then(data => data.json());;
-    const heliusholderdata = await fetch('/api/heliusmarketdata').then(data => data.json());;
+    const oxtickerdata1 = await fetch('/api/oxtickerdata').then(data => data.json());
+    const oxpricedata1 = await fetch('/api/oxpricedata').then(data => data.json());
+    const heliusholderdata = await fetch('/api/heliusmarketdata').then(data => data.json());
+    const holderscandata = await fetch('/api/holderscan').then(data => data.json());
     setJupPriceData(pricedata1);
     setOxTickerData(oxtickerdata1);
     setOxPriceData(oxpricedata1);
     setHolderData(heliusholderdata);
+    setHolderScan(holderscandata);
   }
 
   useEffect(() => {
     fetchData()
+    console.log(holderscan)
   }, []);
 
   const h = 20;
@@ -53,11 +57,15 @@ export default function LinkTree() {
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
         <Header picture="profile.png" title='Lockin Chat' subtitle={`Its Time To Lock TF In 🔒`} />
-          <p>Total Lockers: {holderdata?.totalHolders}</p>
-          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots}</p>
+          <p>Total Lockers: {holderscan?.currentHolders.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <p>Holders Over 10 USD: {holderscan?.holdersOver10USD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <br/>
+          <p>MarketCap: ${holderscan?.marketCap.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <br/>
+          <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKIN'S</p>
           <br />
           <p>Jupiter Price: ${juppricedata?.price.toFixed(3)}</p>
-          <br />
           <p>OX Market Price: ${oxtickerdata?.marketprice}</p>
           <br />
           <p>OX 24 Hour High: ${oxpricedata?.high24h}</p>
