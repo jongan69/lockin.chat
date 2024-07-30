@@ -15,7 +15,7 @@ const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
 const lockLogo = require('../../images/logo.svg');
 const moonLogo = require('../../images/moon.svg');
-
+const logo = require('../../images/logo.svg');
 
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
@@ -64,8 +64,8 @@ export default function LinkTree() {
           <br/>
           <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKINS</p>
           <br />
-          <p>Jupiter Price: ${juppricedata?.price.toFixed(3)}</p>
-          <p>OX Market Price: ${oxtickerdata?.marketprice}</p>
+          <p className='text-right'>Jupiter Price: ${juppricedata?.price.toFixed(6)}</p>
+          <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p>
           <br />
           <p>OX 24 Hour High: ${oxpricedata?.high24h}</p>
           <br />
@@ -80,6 +80,8 @@ export default function LinkTree() {
         <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={trading} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
         <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={lockLogo} height={h} alt="DEXSCREENER" />} name='DEXSCREENER' backgroundcolor={variables.githubColor} />
         <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.twitterColor} />
+        <Button link='https://ox.fun/register?shareAccountId=5MU57aDG' icon={<Image src={logo} alt="OX" height={h} />} name='Lockin Perps' backgroundcolor={variables.pink} />
+
       </Container>
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
         <Canvas>
