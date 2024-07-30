@@ -71,9 +71,9 @@ export default function LinkTree() {
           <br />
           <p>OX 24 Hour Low: ${oxpricedata?.low24h}</p>
           <br />
-          <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3)}</p>
+          <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <br />
-          <p>OX Open Interest: {oxpricedata?.openInterest}</p>
+          <p>OX Open Interest: {oxpricedata?.openInterest.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
         </div>
         <br />
         <Button link='https://moonshot.money?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
