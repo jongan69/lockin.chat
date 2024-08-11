@@ -6,7 +6,7 @@ export async function GET(
     const url = `https://price.jup.ag/v6/price?ids=LOCKIN`;
 
     try {
-        const response = await fetch(url)
+        const response = await fetch(url, { cache: 'no-store' })
             .then(res => res.json())
         // console.log(response)
         const price = response.data.LOCKIN.price;

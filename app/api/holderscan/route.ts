@@ -4,7 +4,7 @@ export async function GET(
 ) {
     const url = `https://holderscan.com/api/tokens/tokens/meta?ca=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5`;
     try {
-        const response = await fetch(url)
+        const response = await fetch(url, { cache: 'no-store' })
             .then(res => res.json())
 
         const currentHolders = response.data?.currentHolders;

@@ -1,14 +1,12 @@
-"use client"
+"use client";
 import React, { Suspense, useEffect, useState } from 'react';
 import { Container } from './styles';
-import Image from 'next/image'
+import Image from 'next/image';
 import Button from '../Button/index.js';
 import variables from '../../variables';
 import Header from '../Header';
-
-// Money
 import { Canvas } from '@react-three/fiber';
-import RainingLockersBackground from '../Three/RainingLockins'
+import RainingLockersBackground from '../Three/RainingLockins';
 
 // Logos
 const trading = require('../../images/trade.svg');
@@ -25,11 +23,12 @@ export default function LinkTree() {
   const [holderscan, setHolderScan] = useState();
 
   async function fetchData() {
-    const pricedata1 = await fetch('/api/price').then(data => data.json());
-    const oxtickerdata1 = await fetch('/api/oxtickerdata').then(data => data.json());
-    const oxpricedata1 = await fetch('/api/oxpricedata').then(data => data.json());
-    const heliusholderdata = await fetch('/api/heliusmarketdata').then(data => data.json());
-    const holderscandata = await fetch('/api/holderscan').then(data => data.json());
+    const pricedata1 = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
+    const oxtickerdata1 = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
+    const oxpricedata1 = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
+    const heliusholderdata = await fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(data => data.json());
+    const holderscandata = await fetch('/api/holderscan', { cache: 'no-store' }).then(data => data.json());
+    
     setJupPriceData(pricedata1);
     setOxTickerData(oxtickerdata1);
     setOxPriceData(oxpricedata1);
@@ -38,7 +37,11 @@ export default function LinkTree() {
   }
 
   useEffect(() => {
-    fetchData()
+    fetchData(); // Fetch initially
+
+    const intervalId = setInterval(fetchData, 60000); // Polling every 60 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
 
   const h = 20;
@@ -46,16 +49,12 @@ export default function LinkTree() {
     return <h2>🌀 Loading...</h2>;
   }
 
-  // Get Token price from Jupiter
-
-  // Get Token Data from 
   return (
     <Suspense fallback={<Loading />}>
       <Container>
-        
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
-        <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
+          <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
           <p>Total Lockers: {holderscan?.currentHolders.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
           <p>Holders Over 10 USD: {holderscan?.holdersOver10USD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
@@ -90,5 +89,5 @@ export default function LinkTree() {
         </Canvas>
       </div>
     </Suspense>
-  )
+  );
 }
