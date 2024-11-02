@@ -18,20 +18,20 @@ const logo = require('../../images/logo.svg');
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
   const [oxtickerdata, setOxTickerData] = useState();
-  const [oxpricedata, setOxPriceData] = useState();
+  // const [oxpricedata, setOxPriceData] = useState();
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
 
   async function fetchData() {
     const pricedata1 = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
-    const oxtickerdata1 = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
-    const oxpricedata1 = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
+    // const oxtickerdata1 = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
+    // const oxpricedata1 = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
     const heliusholderdata = await fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(data => data.json());
     const holderscandata = await fetch('/api/holderscan', { cache: 'no-store' }).then(data => data.json());
     
     setJupPriceData(pricedata1);
-    setOxTickerData(oxtickerdata1);
-    setOxPriceData(oxpricedata1);
+    // setOxTickerData(oxtickerdata1);
+    // setOxPriceData(oxpricedata1);
     setHolderData(heliusholderdata);
     setHolderScan(holderscandata);
   }
@@ -64,15 +64,15 @@ export default function LinkTree() {
           <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKINS</p>
           <br />
           <p className='text-right'>Jupiter Price: ${juppricedata?.price.toFixed(6)}</p>
-          <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p>
+          {/* <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p> */}
           <br />
-          <p>OX 24 Hour High: ${oxpricedata?.high24h}</p>
+          {/* <p>OX 24 Hour High: ${oxpricedata?.high24h}</p> */}
           <br />
-          <p>OX 24 Hour Low: ${oxpricedata?.low24h}</p>
+          {/* <p>OX 24 Hour Low: ${oxpricedata?.low24h}</p> */}
           <br />
-          <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          {/* <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p> */}
           <br />
-          <p>OX Open Interest: {oxpricedata?.openInterest.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          {/* <p>OX Open Interest: {oxpricedata?.openInterest.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p> */}
         </div>
         <br />
         <Button link='https://moonshot.money?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
