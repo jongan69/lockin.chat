@@ -3,15 +3,16 @@ export async function GET(
     request: Request
 ) {
 
-    const url = `https://price.jup.ag/v6/price?ids=LOCKIN`;
+    const address = "8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5";
+    const url = `https://api.jup.ag/price/v2?ids=${address}`;
 
     try {
         const response = await fetch(url, { cache: 'no-store' })
             .then(res => res.json())
         // console.log(response)
-        const price = response.data.LOCKIN.price;
-
-        return Response.json({ price, uiFormmatted: `$${price.toFixed(3)}`});
+        const price = response.data[address].price;
+        console.log(price)
+        return Response.json({ price, uiFormmatted: `$${price}`});
     } catch (error: any) {
         console.error(`Error fetching price data: ${error}`);
         return Response.json({ error: 'failed to load data' })

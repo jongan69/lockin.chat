@@ -63,7 +63,7 @@ export default function LinkTree() {
           <br/>
           <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKINS</p>
           <br />
-          <p className='text-right'>Jupiter Price: ${juppricedata?.price.toFixed(6)}</p>
+          <p className='text-right'>Jupiter Price: ${juppricedata?.price}</p>
           {/* <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p> */}
           <br />
           {/* <p>OX 24 Hour High: ${oxpricedata?.high24h}</p> */}

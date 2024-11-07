@@ -44,6 +44,7 @@ export async function GET(request: NextRequest) {
 
             const data = await response.json();
 
+            console.log(data);
             if (!data.result || !data.result.token_accounts || data.result.token_accounts.length === 0) {
                 console.log("No more results");
                 break;
@@ -69,6 +70,7 @@ export async function GET(request: NextRequest) {
         const totalHolders = allOwners.size;
         const totalEmptyWallets = emptyWallets.size;
 
+        console.log({ totalHolders, totalEmptyWallets });
         return NextResponse.json({ totalHolders, RetardedAssJeetFaggots: totalEmptyWallets });
     } catch (error: any) {
         console.error(`Error fetching token accounts: ${error}`);
