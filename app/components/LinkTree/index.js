@@ -18,6 +18,26 @@ const logo = require('../../images/logo.svg');
 const phantomLogo = require('../../images/phantom.svg');
 const wtf = require('../../images/wtf.svg');
 
+function formatNumberWithSuffix(number) {
+  if (number === undefined || number === null) {
+    return 'N/A';
+  }
+  
+  const num = parseFloat(number); // Ensure the number is parsed correctly
+
+  // Adjust the logic to handle very large numbers
+  if (num >= 1e15) {
+    return (num / 1e15).toFixed(2) + 'M'; // Trillions
+  } else if (num >= 1e12) {
+    return (num / 1e12).toFixed(2) + 'K'; // Billions
+  } else if (num >= 1e9) {
+    return (num / 1e9).toFixed(2) + ''; // Millions
+  } else if (num >= 1e6) {
+    return (num / 1e3).toFixed(2) + ''; // Thousands
+  }
+  return num.toFixed(2);
+}
+
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
   // const [oxtickerdata, setOxTickerData] = useState();
@@ -58,15 +78,15 @@ export default function LinkTree() {
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
           <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
-          <p>Total Lockers: {holderscan?.currentHolders.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-          <p>Holders Over 10 USD: {holderscan?.holdersOver10USD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <p>Total Lockers: {holderscan?.currentHolders?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
+          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
+          <p>Holders Over 10 USD: {holderscan?.holdersOver10USD?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
           <br/>
-          <p>MarketCap: ${holderscan?.marketCap.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <p>MarketCap: ${holderscan?.marketCap?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
           <br/>
-          <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKINS</p>
+          <p>Supply: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>          
           <br />
-          <p className='text-right'>Jupiter Price: ${juppricedata?.price}</p>
+          <p className='text-right'>Jupiter Price: ${juppricedata?.price || 'N/A'}</p>
           {/* <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p> */}
           <br />
           {/* <p>OX 24 Hour High: ${oxpricedata?.high24h}</p> */}
