@@ -11,13 +11,16 @@ import RainingLockersBackground from '../Three/RainingLockins';
 // Logos
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
-const lockLogo = require('../../images/logo.svg');
+const dexLogo = require('../../images/dexscreener.png');
 const moonLogo = require('../../images/moon.svg');
+const rayLogo = require('../../images/raydium.svg');
 const logo = require('../../images/logo.svg');
+const phantomLogo = require('../../images/phantom.svg');
+const wtf = require('../../images/wtf.svg');
 
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
-  const [oxtickerdata, setOxTickerData] = useState();
+  // const [oxtickerdata, setOxTickerData] = useState();
   // const [oxpricedata, setOxPriceData] = useState();
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
@@ -76,12 +79,13 @@ export default function LinkTree() {
         </div>
         <br />
         <Button link='https://www.lockinsol.com/' icon={<Image src={logo} alt="Official Site" height={h} />} name='Official Site' backgroundcolor={variables.discordColor} />
+        <Button link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' icon={<Image src={phantomLogo} alt="Phantom" height={h} />} name='' backgroundcolor={variables.discordColor} />
         <Button link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
-        <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={trading} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
-        <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={trading} height={h} alt="DEXSCREENER" />} name='DEXSCREENER' backgroundcolor={variables.discordColor} />
-        <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.discordColor} />
+        <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={dexLogo} height={h} alt="DexScreener" />} name='DexScreener' backgroundcolor={variables.discordColor} />
+        <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={rayLogo} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
         <Button link='https://ox.fun/x/lockin' icon={<Image src={trading} alt="OX" height={h} />} name='Lockin Perps' backgroundcolor={variables.discordColor} />
-        <Button link='https://lock.wtf' icon={<Image src={logo} alt="OX" height={h} />} name='Lockin WTF' backgroundcolor={variables.discordColor} />
+        <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.discordColor} />
+        <Button link='https://lock.wtf' icon={<Image src={wtf} alt="OX" height={h} />} name='Lock.WTF' backgroundcolor={variables.discordColor} />
       </Container>
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
         <Canvas>

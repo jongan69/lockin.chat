@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Lockin Chat",
   description: "Lock tf in",
+  icons: {
+    icon: "/profile.png",
+  },
 };
 
 export default function RootLayout({
