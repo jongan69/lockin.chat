@@ -45,6 +45,8 @@ export default function LinkTree() {
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
 
+  const largestPrisonPopulation = 28500;
+
   async function fetchData() {
     const pricedata1 = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
     // const oxtickerdata1 = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
@@ -87,31 +89,39 @@ export default function LinkTree() {
           <p>Supply: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>          
           <br />
           <p className='text-right'>Jupiter Price: ${juppricedata?.price || 'N/A'}</p>
-          {/* <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p> */}
           <br />
-          {/* <p>OX 24 Hour High: ${oxpricedata?.high24h}</p> */}
+
+          {/* Status Bar for Holders */}
+          <div className="status-bar">
+            <p>Holders compared to the world's largest prison:</p>
+            <div className="progress-bar">
+              <div
+                className="progress"
+                style={{
+                  width: `${(holderscan?.currentHolders / largestPrisonPopulation) * 100 || 0}%`,
+                }}
+              ></div>
+            </div>
+            <p>{((holderscan?.currentHolders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% complete</p>
+          </div>
           <br />
-          {/* <p>OX 24 Hour Low: ${oxpricedata?.low24h}</p> */}
-          <br />
-          {/* <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p> */}
-          <br />
-          {/* <p>OX Open Interest: {oxpricedata?.openInterest.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p> */}
+
+          <Button link='https://www.lockinsol.com/' icon={<Image src={logo} alt="Official Site" height={h} />} name='Official Site' backgroundcolor={variables.discordColor} />
+          <Button link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' icon={<Image src={phantomLogo} alt="Phantom" height={h} />} name='' backgroundcolor={variables.discordColor} />
+          <Button link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
+          <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={dexLogo} height={h} alt="DexScreener" />} name='DexScreener' backgroundcolor={variables.discordColor} />
+          <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={rayLogo} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
+          <Button link='https://ox.fun/x/lockin' icon={<Image src={trading} alt="OX" height={h} />} name='Lockin Perps' backgroundcolor={variables.discordColor} />
+          <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.discordColor} />
+          <Button link='https://lock.wtf' icon={<Image src={wtf} alt="OX" height={h} />} name='Lock.WTF' backgroundcolor={variables.discordColor} />
         </div>
         <br />
-        <Button link='https://www.lockinsol.com/' icon={<Image src={logo} alt="Official Site" height={h} />} name='Official Site' backgroundcolor={variables.discordColor} />
-        <Button link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' icon={<Image src={phantomLogo} alt="Phantom" height={h} />} name='' backgroundcolor={variables.discordColor} />
-        <Button link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
-        <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={dexLogo} height={h} alt="DexScreener" />} name='DexScreener' backgroundcolor={variables.discordColor} />
-        <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={rayLogo} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
-        <Button link='https://ox.fun/x/lockin' icon={<Image src={trading} alt="OX" height={h} />} name='Lockin Perps' backgroundcolor={variables.discordColor} />
-        <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.discordColor} />
-        <Button link='https://lock.wtf' icon={<Image src={wtf} alt="OX" height={h} />} name='Lock.WTF' backgroundcolor={variables.discordColor} />
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
+          <Canvas>
+            <RainingLockersBackground holders={holderdata?.totalHolders}/>
+          </Canvas>
+        </div>
       </Container>
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
-        <Canvas>
-          <RainingLockersBackground holders={holderdata?.totalHolders}/>
-        </Canvas>
-      </div>
     </Suspense>
   );
 }

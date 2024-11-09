@@ -1,7 +1,7 @@
 {
-  "/api/holderscan/route": "app/api/holderscan/route.js",
-  "/api/heliusmarketdata/route": "app/api/heliusmarketdata/route.js",
   "/api/price/route": "app/api/price/route.js",
-  "/page": "app/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/api/heliusmarketdata/route": "app/api/heliusmarketdata/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/holderscan/route": "app/api/holderscan/route.js",
+  "/page": "app/page.js"
 }
