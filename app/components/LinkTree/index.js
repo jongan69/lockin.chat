@@ -93,7 +93,7 @@ export default function LinkTree() {
 
           {/* Status Bar for Holders */}
           <div className="status-bar">
-            <p>Holders compared to the world's largest prison:</p>
+            <p>Holders compared to the world&apos;s largest prison:</p>
             <div className="progress-bar">
               <div
                 className="progress"
