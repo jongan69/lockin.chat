@@ -49,29 +49,40 @@ export default function LinkTree() {
   const largestPrisonPopulation = 28500;
 
   async function fetchData() {
-    const pricedata = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
-    const oxtickerdata = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
-    const oxpricedata = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
-    const heliusholderdata = await fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(data => data.json());
-    const holderscandata = await fetch('/api/holderscan', { cache: 'no-store' }).then(data => data.json());
-    
-    setJupPriceData(pricedata);
-    setOxTickerData(oxtickerdata);
-    setOxPriceData(oxpricedata);
-    setHolderData(heliusholderdata);
-    setHolderScan(holderscandata);
-    if (holderscandata?.currentHolders) {
-      setTotalHolders(holderscandata?.currentHolders);
-    } else if (heliusholderdata?.totalHolders) {
-      setTotalHolders(heliusholderdata?.totalHolders);
+    try {
+      const [
+        pricedata,
+        oxtickerdata,
+        oxpricedata,
+        heliusholderdata,
+        holderscandata
+      ] = await Promise.all([
+        fetch('/api/price', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/oxtickerdata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/oxpricedata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/holderscan', { cache: 'no-store' }).then(res => res.json())
+      ]);
+
+      setJupPriceData(pricedata);
+      setOxTickerData(oxtickerdata);
+      setOxPriceData(oxpricedata);
+      setHolderData(heliusholderdata);
+      setHolderScan(holderscandata);
+
+      if (holderscandata?.currentHolders) {
+        setTotalHolders(holderscandata.currentHolders);
+      } else if (heliusholderdata?.totalHolders) {
+        setTotalHolders(heliusholderdata.totalHolders);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
   }
 
   useEffect(() => {
     fetchData();
-
     const intervalId = setInterval(fetchData, 60000);
-
     return () => clearInterval(intervalId);
   }, []);
 
@@ -100,7 +111,6 @@ export default function LinkTree() {
     const jupiterPrice = parseFloat(juppricedata.price);
     const oxLowPrice = parseFloat(oxpricedata.low24h);
     const threshold = oxLowPrice * 0.20;
-
     return Math.abs(jupiterPrice - oxLowPrice) <= threshold;
   };
 
@@ -115,16 +125,18 @@ export default function LinkTree() {
             title={translate('title')} 
             subtitle={translate('subtitle')} 
           />
+          <br/>
           <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
           <p>{translate('totalJeets')}: {holderdata?.RetardedAssJeetFaggots?.toLocaleString() || 'N/A'}</p>
           <p>{translate('holdersOver10USD')}: {holderscan?.holdersOver10USD?.toLocaleString() || 'N/A'}</p>
           <p>{translate('marketCap')}: ${holderscan?.marketCap?.toLocaleString() || 'N/A'}</p>
           <p>{translate('supply')}: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>
+          <br/>
           <p>{translate('jupiterPrice')}: {juppricedata?.uiFormmatted || 'N/A'}</p>
           <p>{translate('oxPrice')}: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
           <p>{translate('oxHigh')}: {oxpricedata?.high24h || 'N/A'}</p>
           <p>{translate('oxLow')}: {oxpricedata?.low24h || 'N/A'}</p>
-
+          <br/>
           {isPriceClose() && (
             <p className='text-center' style={{ color: 'green', fontWeight: 'bold' }}>
               LOCK IN LOOKS GREAT
@@ -197,7 +209,7 @@ export default function LinkTree() {
         <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
-            <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 1000}/>
+            <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 10}/>
           </Canvas>
         </div>
       </Container>

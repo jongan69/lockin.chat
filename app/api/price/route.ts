@@ -4,15 +4,15 @@ export async function GET(
 ) {
 
     const address = "8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5";
-    const url = `https://api.jup.ag/price/v2?ids=${address}`;
+    const url = `https://api.jup.ag/price/v2?ids=${address}&showExtraInfo=true`;
 
     try {
         const response = await fetch(url, { cache: 'no-store' })
             .then(res => res.json())
         // console.log(response)
         const price = response.data[address].price;
-        const numberPrice = Number(response.data[address].price);
-        // console.log(`Price: ${price}`);
+        const numberPrice = Number(price);
+        // console.log(`Data: ${JSON.stringify(response)}`);
         if (price && numberPrice) {
             // console.log(`UI Formatted: $${numberPrice.toFixed(6)}`);
             return Response.json({ price, uiFormmatted: `$${numberPrice.toFixed(6)}`});

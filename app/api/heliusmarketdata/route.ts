@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
         const totalHolders = allOwners.size;
         const totalEmptyWallets = emptyWallets.size;
 
-        if (totalHolders > 0 && totalEmptyWallets > 0) {
+        if (totalHolders && totalEmptyWallets) {
             console.log(`Total Holders: ${totalHolders}, Total Empty Wallets: ${totalEmptyWallets}`);
             return NextResponse.json({ totalHolders, RetardedAssJeetFaggots: totalEmptyWallets });
         } else {
