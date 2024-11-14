@@ -7,8 +7,9 @@ import variables from '../../variables';
 import Header from '../Header';
 import { Canvas } from '@react-three/fiber';
 import RainingLockersBackground from '../Three/RainingLockins';
+import { translations } from './translations';
+import LanguageSelector from './LanguageSelector';
 
-// Logos
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
 const dexLogo = require('../../images/dexscreener.png');
@@ -23,17 +24,15 @@ function formatNumberWithSuffix(number) {
     return 'N/A';
   }
   
-  const num = parseFloat(number); // Ensure the number is parsed correctly
-
-  // Adjust the logic to handle very large numbers
+  const num = parseFloat(number);
   if (num >= 1e15) {
-    return (num / 1e15).toFixed(2) + 'M'; // Trillions
+    return (num / 1e15).toFixed(2) + 'M';
   } else if (num >= 1e12) {
-    return (num / 1e12).toFixed(2) + 'K'; // Billions
+    return (num / 1e12).toFixed(2) + 'K';
   } else if (num >= 1e9) {
-    return (num / 1e9).toFixed(2) + ''; // Millions
+    return (num / 1e9).toFixed(2) + '';
   } else if (num >= 1e6) {
-    return (num / 1e3).toFixed(2) + ''; // Thousands
+    return (num / 1e3).toFixed(2) + '';
   }
   return num.toFixed(2);
 }
@@ -45,7 +44,8 @@ export default function LinkTree() {
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
   const [totalholders, setTotalHolders] = useState();
-
+  const [language, setLanguage] = useState('en');
+  
   const largestPrisonPopulation = 28500;
 
   async function fetchData() {
@@ -65,64 +65,74 @@ export default function LinkTree() {
     } else if (heliusholderdata?.totalHolders) {
       setTotalHolders(heliusholderdata?.totalHolders);
     }
-
-
   }
 
   useEffect(() => {
-    fetchData(); // Fetch initially
+    fetchData();
 
-    const intervalId = setInterval(fetchData, 60000); // Polling every 60 seconds
+    const intervalId = setInterval(fetchData, 60000);
 
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
-  const h = 20;
-  function Loading() {
-    return <h2>🌀 Loading...</h2>;
-  }
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem('language');
+    if (storedLanguage) {
+      setLanguage(storedLanguage);
+    } else {
+      async function fetchLanguage() {
+        const response = await fetch('/api/detectLanguage').then(data => data.json());
+        setLanguage(response.language);
+      }
+      fetchLanguage();
+    }
+  }, []);
+
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
+    localStorage.setItem('language', newLanguage);
+  };
+
+  const translate = (key) => translations[language]?.[key] || translations.en[key];
 
   const isPriceClose = () => {
     if (!juppricedata || !oxpricedata) return false;
     const jupiterPrice = parseFloat(juppricedata.price);
     const oxLowPrice = parseFloat(oxpricedata.low24h);
-    const threshold = oxLowPrice * 0.20; // 20% of the OX 24h low price
-    // console.log(`Jupiter Price: ${jupiterPrice}, OX Low Price: ${oxLowPrice}, Threshold: ${threshold}`);
+    const threshold = oxLowPrice * 0.20;
 
     return Math.abs(jupiterPrice - oxLowPrice) <= threshold;
   };
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<h2>🌀 Loading...</h2>}>
       <Container>
+        <LanguageSelector currentLanguage={language} onChangeLanguage={handleLanguageChange} />
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
-          <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
-          <p>Total Lockers : {totalholders?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
-          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
-          <p>Holders Over 10 USD: {holderscan?.holdersOver10USD?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
-          <br/>
-          <p>MarketCap: ${holderscan?.marketCap?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
-          <br/>
-          <p>Supply: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>          
-          <br />
-          <p className='text-center'>Jupiter Price: {juppricedata?.uiFormmatted || 'N/A'}</p>
-          <p className='text-center'>OX Price: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
-          <p className='text-center'>OX 24h High: {oxpricedata?.high24h || 'N/A'}</p>
-          <p className='text-center'>OX 24h Low: {oxpricedata?.low24h || 'N/A'}</p>
-          
+          <Header 
+            picture="profile.png" 
+            title={translate('title')} 
+            subtitle={translate('subtitle')} 
+          />
+          <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('totalJeets')}: {holderdata?.RetardedAssJeetFaggots?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('holdersOver10USD')}: {holderscan?.holdersOver10USD?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('marketCap')}: ${holderscan?.marketCap?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('supply')}: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>
+          <p>{translate('jupiterPrice')}: {juppricedata?.uiFormmatted || 'N/A'}</p>
+          <p>{translate('oxPrice')}: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
+          <p>{translate('oxHigh')}: {oxpricedata?.high24h || 'N/A'}</p>
+          <p>{translate('oxLow')}: {oxpricedata?.low24h || 'N/A'}</p>
+
           {isPriceClose() && (
             <p className='text-center' style={{ color: 'green', fontWeight: 'bold' }}>
               LOCK IN LOOKS GREAT
             </p>
           )}
-          {/* <p className='text-center'>OX 24h Volume: {oxpricedata?.volume24h || 'N/A'}</p> */}
-          {/* <p className='text-center'>OX 24h Currency Volume: {oxpricedata?.currencyVolume24h || 'N/A'}</p> */}
-          {/* <p className='text-center'>OX Open Interest: {oxpricedata?.openInterest || 'N/A'}</p> */}
 
-          {/* Status Bar for Holders */}
           <div className="status-bar">
-            <p>Holders compared to the world&apos;s largest prison:</p>
+            <p>{translate('holdersCompared')}</p>
             <div className="progress-bar">
               <div
                 className="progress"
@@ -131,18 +141,58 @@ export default function LinkTree() {
                 }}
               ></div>
             </div>
-            <p>{((totalholders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% complete</p>
+            <p>{((totalholders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% {translate('progressComplete')}</p>
           </div>
           <br />
 
-          <Button link='https://www.lockinsol.com/' icon={<Image src={logo} alt="Official Site" height={h} />} name='Official Site' backgroundcolor={variables.discordColor} />
-          <Button link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' icon={<Image src={phantomLogo} alt="Phantom" height={h} />} name='' backgroundcolor={variables.discordColor} />
-          <Button link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
-          <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={dexLogo} height={h} alt="DexScreener" />} name='DexScreener' backgroundcolor={variables.discordColor} />
-          <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={rayLogo} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
-          <Button link='https://ox.fun/x/lockin' icon={<Image src={trading} alt="OX" height={h} />} name='Lockin Perps' backgroundcolor={variables.discordColor} />
-          <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.discordColor} />
-          <Button link='https://lock.wtf' icon={<Image src={wtf} alt="OX" height={h} />} name='Lock.WTF' backgroundcolor={variables.discordColor} />
+          <Button 
+            link='https://www.lockinsol.com/' 
+            icon={<Image src={logo} alt="Official Site" height={20} />} 
+            name={translate('buttonOfficialSite')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' 
+            icon={<Image src={phantomLogo} alt="Phantom" height={20} />} 
+            name='' 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' 
+            icon={<Image src={moonLogo} height={20} alt="Moonshot" />} 
+            name={translate('buttonMoonshot')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' 
+            icon={<Image src={dexLogo} height={20} alt="DexScreener" />} 
+            name={translate('buttonDexScreener')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' 
+            icon={<Image src={rayLogo} height={20} alt="Raydium" />} 
+            name={translate('buttonRaydium')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://ox.fun/x/lockin' 
+            icon={<Image src={trading} alt="OX" height={20} />} 
+            name={translate('buttonLockinPerps')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' 
+            icon={<Image src={bonkLogo} alt="Bonk" height={20} />} 
+            name={translate('buttonBonkBuy')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://lock.wtf' 
+            icon={<Image src={wtf} alt="WTF" height={20} />} 
+            name={translate('buttonLockWTF')} 
+            backgroundcolor={variables.discordColor} 
+          />
         </div>
         <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
