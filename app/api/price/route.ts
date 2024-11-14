@@ -11,8 +11,15 @@ export async function GET(
             .then(res => res.json())
         // console.log(response)
         const price = response.data[address].price;
-        console.log(price)
-        return Response.json({ price, uiFormmatted: `$${price}`});
+        const numberPrice = Number(response.data[address].price);
+        // console.log(`Price: ${price}`);
+        if (price && numberPrice) {
+            // console.log(`UI Formatted: $${numberPrice.toFixed(6)}`);
+            return Response.json({ price, uiFormmatted: `$${numberPrice.toFixed(6)}`});
+        } else {
+            console.log(`No price data available`);
+            return Response.json({ price: 0, uiFormmatted: `$${0}`});
+        }
     } catch (error: any) {
         console.error(`Error fetching price data: ${error}`);
         return Response.json({ error: 'failed to load data' })

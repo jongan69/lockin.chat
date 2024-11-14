@@ -40,25 +40,33 @@ function formatNumberWithSuffix(number) {
 
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
-  // const [oxtickerdata, setOxTickerData] = useState();
-  // const [oxpricedata, setOxPriceData] = useState();
+  const [oxtickerdata, setOxTickerData] = useState();
+  const [oxpricedata, setOxPriceData] = useState();
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
+  const [totalholders, setTotalHolders] = useState();
 
   const largestPrisonPopulation = 28500;
 
   async function fetchData() {
-    const pricedata1 = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
-    // const oxtickerdata1 = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
-    // const oxpricedata1 = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
+    const pricedata = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
+    const oxtickerdata = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
+    const oxpricedata = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
     const heliusholderdata = await fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(data => data.json());
     const holderscandata = await fetch('/api/holderscan', { cache: 'no-store' }).then(data => data.json());
     
-    setJupPriceData(pricedata1);
-    // setOxTickerData(oxtickerdata1);
-    // setOxPriceData(oxpricedata1);
+    setJupPriceData(pricedata);
+    setOxTickerData(oxtickerdata);
+    setOxPriceData(oxpricedata);
     setHolderData(heliusholderdata);
     setHolderScan(holderscandata);
+    if (holderscandata?.currentHolders) {
+      setTotalHolders(holderscandata?.currentHolders);
+    } else if (heliusholderdata?.totalHolders) {
+      setTotalHolders(heliusholderdata?.totalHolders);
+    }
+
+
   }
 
   useEffect(() => {
@@ -74,13 +82,23 @@ export default function LinkTree() {
     return <h2>🌀 Loading...</h2>;
   }
 
+  const isPriceClose = () => {
+    if (!juppricedata || !oxpricedata) return false;
+    const jupiterPrice = parseFloat(juppricedata.price);
+    const oxLowPrice = parseFloat(oxpricedata.low24h);
+    const threshold = oxLowPrice * 0.20; // 20% of the OX 24h low price
+    // console.log(`Jupiter Price: ${jupiterPrice}, OX Low Price: ${oxLowPrice}, Threshold: ${threshold}`);
+
+    return Math.abs(jupiterPrice - oxLowPrice) <= threshold;
+  };
+
   return (
     <Suspense fallback={<Loading />}>
       <Container>
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
           <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
-          <p>Total Lockers: {holderscan?.currentHolders?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
+          <p>Total Lockers : {totalholders?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
           <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
           <p>Holders Over 10 USD: {holderscan?.holdersOver10USD?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 'N/A'}</p>
           <br/>
@@ -88,8 +106,19 @@ export default function LinkTree() {
           <br/>
           <p>Supply: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>          
           <br />
-          <p className='text-right'>Jupiter Price: ${juppricedata?.price || 'N/A'}</p>
-          <br />
+          <p className='text-center'>Jupiter Price: {juppricedata?.uiFormmatted || 'N/A'}</p>
+          <p className='text-center'>OX Price: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
+          <p className='text-center'>OX 24h High: {oxpricedata?.high24h || 'N/A'}</p>
+          <p className='text-center'>OX 24h Low: {oxpricedata?.low24h || 'N/A'}</p>
+          
+          {isPriceClose() && (
+            <p className='text-center' style={{ color: 'green', fontWeight: 'bold' }}>
+              LOCK IN LOOKS GREAT
+            </p>
+          )}
+          {/* <p className='text-center'>OX 24h Volume: {oxpricedata?.volume24h || 'N/A'}</p> */}
+          {/* <p className='text-center'>OX 24h Currency Volume: {oxpricedata?.currencyVolume24h || 'N/A'}</p> */}
+          {/* <p className='text-center'>OX Open Interest: {oxpricedata?.openInterest || 'N/A'}</p> */}
 
           {/* Status Bar for Holders */}
           <div className="status-bar">
@@ -98,11 +127,11 @@ export default function LinkTree() {
               <div
                 className="progress"
                 style={{
-                  width: `${(holderscan?.currentHolders / largestPrisonPopulation) * 100 || 0}%`,
+                  width: `${(totalholders / largestPrisonPopulation) * 100 || 0}%`,
                 }}
               ></div>
             </div>
-            <p>{((holderscan?.currentHolders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% complete</p>
+            <p>{((totalholders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% complete</p>
           </div>
           <br />
 
@@ -118,7 +147,7 @@ export default function LinkTree() {
         <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
-            <RainingLockersBackground holders={holderdata?.totalHolders}/>
+            <RainingLockersBackground holders={totalholders}/>
           </Canvas>
         </div>
       </Container>

@@ -7,14 +7,13 @@ export async function GET(
 
     try {
         const response = await fetch(url, { cache: 'no-store' })
-            .then(res => res.json())
+            .then(res => res.json())        
         // console.log(response)
-        
-        const upperprice = response.data[0].upperPriceBound;
-        const lowerprice = response.data[0].lowerPriceBound;
-        const marketprice = response.data[0].markPrice;
+        const upperprice = Number(response.data[0].upperPriceBound);
+        const lowerprice = Number(response.data[0].lowerPriceBound);
+        const marketprice = Number(response.data[0].markPrice);
 
-        return Response.json({ upperprice, lowerprice, marketprice });
+        return Response.json({ upperprice, lowerprice, marketprice, uiFormmatted: `$${marketprice.toFixed(6)}`});
     } catch (error: any) {
         console.error(`Error fetching price data: ${error}`);
         return Response.json({ error: 'failed to load data' })
