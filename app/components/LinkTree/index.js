@@ -197,7 +197,7 @@ export default function LinkTree() {
         <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
-            <RainingLockersBackground holders={totalholders}/>
+            <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 1000}/>
           </Canvas>
         </div>
       </Container>
