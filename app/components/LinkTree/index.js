@@ -9,6 +9,7 @@ import { Canvas } from '@react-three/fiber';
 import RainingLockersBackground from '../Three/RainingLockins';
 import { translations } from './translations';
 import LanguageSelector from './LanguageSelector';
+import MessengerButton from '../MessengerButton';
 
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
@@ -207,12 +208,14 @@ export default function LinkTree() {
           />
         </div>
         <br />
+        <MessengerButton />
+        <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
             <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 10}/>
           </Canvas>
         </div>
       </Container>
-    </Suspense>
+  </Suspense>
   );
 }

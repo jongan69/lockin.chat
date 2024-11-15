@@ -1,8 +1,8 @@
 {
-  "/api/oxtickerdata/route": "app/api/oxtickerdata/route.js",
-  "/api/heliusmarketdata/route": "app/api/heliusmarketdata/route.js",
-  "/api/price/route": "app/api/price/route.js",
   "/api/oxpricedata/route": "app/api/oxpricedata/route.js",
-  "/page": "app/page.js",
+  "/api/messages/route": "app/api/messages/route.js",
+  "/api/price/route": "app/api/price/route.js",
+  "/api/heliusmarketdata/route": "app/api/heliusmarketdata/route.js",
+  "/api/oxtickerdata/route": "app/api/oxtickerdata/route.js",
   "/api/holderscan/route": "app/api/holderscan/route.js"
 }
