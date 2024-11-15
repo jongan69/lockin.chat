@@ -16,6 +16,7 @@ export async function GET(
         const currencyVolume24h = response.data[0].currencyVolume24h;
         const openInterest = response.data[0].openInterest;
 
+        // console.log(`High 24h: ${high24h}, Low 24h: ${low24h}, Volume 24h: ${volume24h}, Currency Volume 24h: ${currencyVolume24h}, Open Interest: ${openInterest}`);
         return Response.json({ high24h, low24h, volume24h, currencyVolume24h, openInterest });
     } catch (error: any) {
         console.error(`Error fetching price data: ${error}`);

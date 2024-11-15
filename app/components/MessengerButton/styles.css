@@ -1,0 +1,116 @@
+.messenger-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #0078FF; /* Messenger blue color */
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000; /* Ensure it appears above other elements */
+} 
+
+.chat-window {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 325px;
+  height: 500px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.chat-header {
+  padding: 10px;
+  background-color: #0078FF;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-footer {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  contain: content
+  /* justify-content: center; */
+}
+
+.send-button {
+  margin-left: auto;
+  align-self: center;
+  background-color: #0078FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.chat-footer input {
+  flex: 1;
+  padding: 5px;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  color: black;
+  border-radius: 4px;
+}
+
+.chat-footer button {
+  padding: 5px 10px;
+  background-color: #0078FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.message-bubble {
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #0078FF; /* User message bubble color */
+  color: white;
+  align-self: flex-end; /* Align user messages to the right */
+}
+
+.assistant-message {
+  background-color: #f0f0f0; /* Assistant message bubble color */
+  color: black;
+  align-self: flex-start; /* Align assistant messages to the left */
+}
+
+.message-bubble a {
+  color: green; /* Set hyperlink text color to green */
+  text-decoration: none; /* Optional: remove underline */
+}
+
+/* Optional: Add hover effect */
+.message-bubble a:hover {
+  text-decoration: underline; /* Add underline on hover */
+} 

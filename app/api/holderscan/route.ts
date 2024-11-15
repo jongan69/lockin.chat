@@ -12,7 +12,7 @@ export async function GET(
         const marketCap = response.data?.marketCap;
         const marketCapOverHolders = response?.data?.marketCapOverHolders;
         const holdersOver10USD = response?.data?.holdersOver10USD;
-        // console.log(currentHolders)
+        // console.log(`Current Holders: ${currentHolders}, Supply: ${supply}, Market Cap: ${marketCap}, Market Cap Over Holders: ${marketCapOverHolders}, Holders Over 10 USD: ${holdersOver10USD}`);
         return Response.json({ currentHolders, supply, marketCap, marketCapOverHolders, holdersOver10USD });
     } catch (error: any) {
         console.error(`Error fetching price data: ${error}`);

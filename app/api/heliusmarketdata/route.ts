@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
             const data = await response.json();
 
             if (!data.result || !data.result.token_accounts || data.result.token_accounts.length === 0) {
-                console.log("No more results");
+                // console.log(`No more results for ${mintAddress}`);
                 break;
             }
 
@@ -69,7 +69,12 @@ export async function GET(request: NextRequest) {
         const totalHolders = allOwners.size;
         const totalEmptyWallets = emptyWallets.size;
 
-        return NextResponse.json({ totalHolders, RetardedAssJeetFaggots: totalEmptyWallets });
+        if (totalHolders && totalEmptyWallets) {
+            console.log(`Total Holders: ${totalHolders}, Total Empty Wallets: ${totalEmptyWallets}`);
+            return NextResponse.json({ totalHolders, RetardedAssJeetFaggots: totalEmptyWallets });
+        } else {
+            return NextResponse.json({ totalHolders: 0, RetardedAssJeetFaggots: 0 });
+        }
     } catch (error: any) {
         console.error(`Error fetching token accounts: ${error}`);
         return NextResponse.json({ error: 'failed to load data' });
