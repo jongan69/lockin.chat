@@ -9,6 +9,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 export default function MessengerButton({ promptData }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [newMessage, setNewMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: messages, mutate } = useSWR('/api/messages', fetcher, {
     refreshInterval: 5000, // Poll every 5 seconds
@@ -18,6 +19,7 @@ export default function MessengerButton({ promptData }) {
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
+      setIsLoading(true);
       await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,6 +32,7 @@ export default function MessengerButton({ promptData }) {
       });
       setNewMessage('');
       mutate(); // Revalidate the SWR cache to fetch new messages
+      setIsLoading(false);
     }
   };
 
@@ -41,7 +44,7 @@ export default function MessengerButton({ promptData }) {
       {isChatOpen && (
         <div className="chat-window">
           <div className="chat-header">
-            <h4>Chat with Us</h4>
+            <h4>Lockin with Us</h4>
             <button onClick={() => setIsChatOpen(false)}>Close</button>
           </div>
           <div className="chat-body">
@@ -57,11 +60,15 @@ export default function MessengerButton({ promptData }) {
           <div className="chat-footer">
             <input
               type="text"
-              placeholder="Type a message..."
+              placeholder="What the lock?..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
-            <button className="send-button" onClick={handleSendMessage}>Send</button>
+            {isLoading ? (
+              <div className="loader"></div>
+            ) : (
+              <button className="send-button" onClick={handleSendMessage}>Send</button>
+            )}
           </div>
         </div>
       )}
