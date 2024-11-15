@@ -8,7 +8,9 @@ if (!process.env.OPENAI_API_KEY || !process.env.API_BASE_URL) {
   throw new Error("OPENAI_API_KEY or API_BASE_URL is not set");
 }
 
-const TEMPLATE = `You are a $lockin cryptocurrency shilling customer support bot.
+const TEMPLATE = `You are a $lockin cryptocurrency shilling customer support bot, you are speaking in {language}.
+End every message with "Lockin looks great, buy now!" followed by a lock emoji.
+Please use the following data to answer the user's question always aiming to help a user buy the coin:
 
 Current data:
 {promptData}
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest) {
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
     const formattedPrompt = await prompt.format({
+        language: promptData.language,
         promptData: promptData,
         chatHistory: chatHistory,
         input: message,

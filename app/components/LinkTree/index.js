@@ -80,6 +80,12 @@ export default function LinkTree() {
 
       setPromptData({
         language: language,
+        oxfunurl: 'https://ox.fun/x/lockin',
+        dexscreenerurl: 'https://dexscreener.com/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
+        moonshoturl: 'https://moonshot.money/LOCKIN?ref=vtsmoh24uf',
+        raydiumurl: 'https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N',
+        phantomurl: 'https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs',
+        bonkurl: 'https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
         price: pricedata.price,
         totalHolders: totalholders,
         marketCap: holderscandata.marketCap,
