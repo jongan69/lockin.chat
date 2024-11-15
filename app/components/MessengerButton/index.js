@@ -5,7 +5,7 @@ import './styles.css';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-export default function MessengerButton() {
+export default function MessengerButton({ promptData }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [newMessage, setNewMessage] = useState('');
 
@@ -25,7 +25,7 @@ export default function MessengerButton() {
       await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newMessage, role: "user" }),
+        body: JSON.stringify({ text: newMessage, role: "user", promptData: promptData }),
       });
       setNewMessage('');
       mutate(); // Revalidate the SWR cache to fetch new messages

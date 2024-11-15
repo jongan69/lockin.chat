@@ -46,6 +46,7 @@ export default function LinkTree() {
   const [holderscan, setHolderScan] = useState();
   const [totalholders, setTotalHolders] = useState();
   const [language, setLanguage] = useState('en');
+  const [promptData, setPromptData] = useState();
   
   const largestPrisonPopulation = 28500;
 
@@ -76,6 +77,16 @@ export default function LinkTree() {
       } else if (heliusholderdata?.totalHolders) {
         setTotalHolders(heliusholderdata.totalHolders);
       }
+
+      setPromptData({
+        language: language,
+        price: pricedata.price,
+        totalHolders: totalholders,
+        marketCap: holderscandata.marketCap,
+        supply: holderscandata.supply,
+        high24h: oxpricedata.high24h,
+        low24h: oxpricedata.low24h,
+      });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -208,7 +219,7 @@ export default function LinkTree() {
           />
         </div>
         <br />
-        <MessengerButton />
+        <MessengerButton promptData={promptData} />
         <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
