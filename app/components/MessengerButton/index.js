@@ -53,7 +53,17 @@ export default function MessengerButton({ promptData }) {
                 key={index}
                 className={`message-bubble ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
               >
-                <ReactMarkdown>{msg.text}</ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    a: ({ node, ...props }) => (
+                      <a {...props} target="_blank" rel="noopener noreferrer">
+                        {props.children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
               </div>
             ))}
           </div>
