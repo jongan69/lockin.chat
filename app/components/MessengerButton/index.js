@@ -46,7 +46,10 @@ export default function MessengerButton({ promptData }) {
           </div>
           <div className="chat-body">
             {messages?.map((msg, index) => (
-              <div key={index} className="message-bubble">
+              <div
+                key={index}
+                className={`message-bubble ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
+              >
                 <ReactMarkdown>{msg.text}</ReactMarkdown>
               </div>
             ))}
@@ -58,7 +61,7 @@ export default function MessengerButton({ promptData }) {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
-            <button onClick={handleSendMessage}>Send</button>
+            <button className="send-button" onClick={handleSendMessage}>Send</button>
           </div>
         </div>
       )}
