@@ -25,6 +25,7 @@
     "polished": "^4.3.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-markdown": "^9.0.1",
     "styled-components": "^6.1.9",
     "swr": "^2.2.5",
     "three": "^0.164.1",

@@ -43,7 +43,7 @@
   flex: 1;
   padding: 10px;
   overflow-y: auto;
-  background-color: #f0f0f0;
+  background-color: #000000;
 }
 
 .chat-footer {
@@ -79,4 +79,14 @@
   margin-bottom: 10px;
   max-width: 80%;
   word-wrap: break-word;
+}
+
+.message-bubble a {
+  color: rgb(0, 0, 0); /* Set hyperlink text color to green */
+  text-decoration: none; /* Optional: remove underline */
+}
+
+/* Optional: Add hover effect */
+.message-bubble a:hover {
+  text-decoration: underline; /* Add underline on hover */
 } 

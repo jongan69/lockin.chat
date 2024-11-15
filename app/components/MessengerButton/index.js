@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ForwardToInbox as MessengerIcon } from '@mui/icons-material';
 import useSWR from 'swr';
+import ReactMarkdown from 'react-markdown';
 import './styles.css';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -46,7 +47,7 @@ export default function MessengerButton({ promptData }) {
           <div className="chat-body">
             {messages?.map((msg, index) => (
               <div key={index} className="message-bubble">
-                {msg.text}
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
               </div>
             ))}
           </div>
