@@ -48,7 +48,7 @@ export default function MessengerButton({ promptData }) {
             <button onClick={() => setIsChatOpen(false)}>Close</button>
           </div>
           <div className="chat-body">
-            {messages?.map((msg, index) => (
+            {messages?.slice().reverse().map((msg, index) => (
               <div
                 key={index}
                 className={`message-bubble ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
