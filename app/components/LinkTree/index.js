@@ -7,13 +7,36 @@ import variables from '../../variables';
 import Header from '../Header';
 import { Canvas } from '@react-three/fiber';
 import RainingLockersBackground from '../Three/RainingLockins';
+import { translations } from './translations';
+import LanguageSelector from './LanguageSelector';
+import MessengerButton from '../MessengerButton';
 
-// Logos
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
-const lockLogo = require('../../images/logo.svg');
+const dexLogo = require('../../images/dexscreener.png');
 const moonLogo = require('../../images/moon.svg');
+const rayLogo = require('../../images/raydium.svg');
 const logo = require('../../images/logo.svg');
+const phantomLogo = require('../../images/phantom.svg');
+const wtf = require('../../images/wtf.svg');
+
+function formatNumberWithSuffix(number) {
+  if (number === undefined || number === null) {
+    return 'N/A';
+  }
+  
+  const num = parseFloat(number);
+  if (num >= 1e15) {
+    return (num / 1e15).toFixed(2) + 'M';
+  } else if (num >= 1e12) {
+    return (num / 1e12).toFixed(2) + 'K';
+  } else if (num >= 1e9) {
+    return (num / 1e9).toFixed(2) + '';
+  } else if (num >= 1e6) {
+    return (num / 1e3).toFixed(2) + '';
+  }
+  return num.toFixed(2);
+}
 
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
@@ -21,73 +44,195 @@ export default function LinkTree() {
   const [oxpricedata, setOxPriceData] = useState();
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
+  const [totalholders, setTotalHolders] = useState();
+  const [language, setLanguage] = useState('en');
+  const [promptData, setPromptData] = useState();
+  
+  const largestPrisonPopulation = 28500;
 
   async function fetchData() {
-    const pricedata1 = await fetch('/api/price', { cache: 'no-store' }).then(data => data.json());
-    const oxtickerdata1 = await fetch('/api/oxtickerdata', { cache: 'no-store' }).then(data => data.json());
-    const oxpricedata1 = await fetch('/api/oxpricedata', { cache: 'no-store' }).then(data => data.json());
-    const heliusholderdata = await fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(data => data.json());
-    const holderscandata = await fetch('/api/holderscan', { cache: 'no-store' }).then(data => data.json());
-    
-    setJupPriceData(pricedata1);
-    setOxTickerData(oxtickerdata1);
-    setOxPriceData(oxpricedata1);
-    setHolderData(heliusholderdata);
-    setHolderScan(holderscandata);
+    try {
+      const [
+        pricedata,
+        oxtickerdata,
+        oxpricedata,
+        heliusholderdata,
+        holderscandata
+      ] = await Promise.all([
+        fetch('/api/price', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/oxtickerdata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/oxpricedata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/holderscan', { cache: 'no-store' }).then(res => res.json())
+      ]);
+
+      setJupPriceData(pricedata);
+      setOxTickerData(oxtickerdata);
+      setOxPriceData(oxpricedata);
+      setHolderData(heliusholderdata);
+      setHolderScan(holderscandata);
+
+      if (holderscandata?.currentHolders) {
+        setTotalHolders(holderscandata.currentHolders);
+      } else if (heliusholderdata?.totalHolders) {
+        setTotalHolders(heliusholderdata.totalHolders);
+      }
+
+      setPromptData({
+        language: language,
+        oxfunurl: 'https://ox.fun/x/lockin',
+        dexscreenerurl: 'https://dexscreener.com/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
+        moonshoturl: 'https://moonshot.money/LOCKIN?ref=vtsmoh24uf',
+        raydiumurl: 'https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N',
+        phantomurl: 'https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs',
+        bonkurl: 'https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
+        price: pricedata.price,
+        totalHolders: totalholders,
+        marketCap: holderscandata.marketCap,
+        supply: holderscandata.supply,
+        high24h: oxpricedata.high24h,
+        low24h: oxpricedata.low24h,
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   useEffect(() => {
-    fetchData(); // Fetch initially
-
-    const intervalId = setInterval(fetchData, 60000); // Polling every 60 seconds
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
+    fetchData();
+    const intervalId = setInterval(fetchData, 60000);
+    return () => clearInterval(intervalId);
   }, []);
 
-  const h = 20;
-  function Loading() {
-    return <h2>🌀 Loading...</h2>;
-  }
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem('language');
+    if (storedLanguage) {
+      setLanguage(storedLanguage);
+    } else {
+      async function fetchLanguage() {
+        const response = await fetch('/api/detectLanguage').then(data => data.json());
+        setLanguage(response.language);
+      }
+      fetchLanguage();
+    }
+  }, []);
+
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
+    localStorage.setItem('language', newLanguage);
+  };
+
+  const translate = (key) => translations[language]?.[key] || translations.en[key];
+
+  const isPriceClose = () => {
+    if (!juppricedata || !oxpricedata) return false;
+    const jupiterPrice = parseFloat(juppricedata.price);
+    const oxLowPrice = parseFloat(oxpricedata.low24h);
+    const threshold = oxLowPrice * 0.20;
+    return Math.abs(jupiterPrice - oxLowPrice) <= threshold;
+  };
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<h2>🌀 Loading...</h2>}>
       <Container>
+        <LanguageSelector currentLanguage={language} onChangeLanguage={handleLanguageChange} />
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
-          <Header picture="profile.png" title='Lockin Chat' subtitle={'Its Time To Lock TF In 🔒'} />
-          <p>Total Lockers: {holderscan?.currentHolders.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-          <p>Total Jeets: {holderdata?.RetardedAssJeetFaggots.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-          <p>Holders Over 10 USD: {holderscan?.holdersOver10USD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <Header 
+            picture="profile.png" 
+            title={translate('title')} 
+            subtitle={translate('subtitle')} 
+          />
           <br/>
-          <p>MarketCap: ${holderscan?.marketCap.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+          <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('totalJeets')}: {holderdata?.RetardedAssJeetFaggots?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('holdersOver10USD')}: {holderscan?.holdersOver10USD?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('marketCap')}: ${holderscan?.marketCap?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('supply')}: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>
           <br/>
-          <p>Supply: {holderscan?.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} LOCKINS</p>
+          <p>{translate('jupiterPrice')}: {juppricedata?.uiFormmatted || 'N/A'}</p>
+          <p>{translate('oxPrice')}: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
+          <p>{translate('oxHigh')}: {oxpricedata?.high24h || 'N/A'}</p>
+          <p>{translate('oxLow')}: {oxpricedata?.low24h || 'N/A'}</p>
+          <br/>
+          {isPriceClose() && (
+            <p className='text-center' style={{ color: 'green', fontWeight: 'bold' }}>
+              LOCK IN LOOKS GREAT
+            </p>
+          )}
+
+          <div className="status-bar">
+            <p>{translate('holdersCompared')}</p>
+            <div className="progress-bar">
+              <div
+                className="progress"
+                style={{
+                  width: `${(totalholders / largestPrisonPopulation) * 100 || 0}%`,
+                }}
+              ></div>
+            </div>
+            <p>{((totalholders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% {translate('progressComplete')}</p>
+          </div>
           <br />
-          <p className='text-right'>Jupiter Price: ${juppricedata?.price.toFixed(6)}</p>
-          <p className='text-right'>OX Market Price: ${oxtickerdata?.marketprice}</p>
-          <br />
-          <p>OX 24 Hour High: ${oxpricedata?.high24h}</p>
-          <br />
-          <p>OX 24 Hour Low: ${oxpricedata?.low24h}</p>
-          <br />
-          <p>OX 24 Hour Volume: {Number(oxpricedata?.volume24h).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-          <br />
-          <p>OX Open Interest: {oxpricedata?.openInterest.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+
+          <Button 
+            link='https://www.lockinsol.com/' 
+            icon={<Image src={logo} alt="Official Site" height={20} />} 
+            name={translate('buttonOfficialSite')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' 
+            icon={<Image src={phantomLogo} alt="Phantom" height={20} />} 
+            name='' 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' 
+            icon={<Image src={moonLogo} height={20} alt="Moonshot" />} 
+            name={translate('buttonMoonshot')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' 
+            icon={<Image src={dexLogo} height={20} alt="DexScreener" />} 
+            name={translate('buttonDexScreener')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' 
+            icon={<Image src={rayLogo} height={20} alt="Raydium" />} 
+            name={translate('buttonRaydium')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://ox.fun/x/lockin' 
+            icon={<Image src={trading} alt="OX" height={20} />} 
+            name={translate('buttonLockinPerps')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' 
+            icon={<Image src={bonkLogo} alt="Bonk" height={20} />} 
+            name={translate('buttonBonkBuy')} 
+            backgroundcolor={variables.discordColor} 
+          />
+          <Button 
+            link='https://lock.wtf' 
+            icon={<Image src={wtf} alt="WTF" height={20} />} 
+            name={translate('buttonLockWTF')} 
+            backgroundcolor={variables.discordColor} 
+          />
         </div>
         <br />
-        <Button link='https://moonshot.money?ref=vtsmoh24uf' icon={<Image src={moonLogo} height={h} alt="Moonshot" />} name='Moonshot' backgroundcolor={variables.discordColor} />
-        <Button link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' icon={<Image src={trading} height={h} alt="Raydium" />} name='Raydium' backgroundcolor={variables.discordColor} />
-        <Button link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' icon={<Image src={trading} height={h} alt="DEXSCREENER" />} name='DEXSCREENER' backgroundcolor={variables.discordColor} />
-        <Button link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' icon={<Image src={bonkLogo} alt="Bonk" height={h} />} name='Bonk Buy' backgroundcolor={variables.discordColor} />
-        <Button link='https://ox.fun/register?shareAccountId=5MU57aDG' icon={<Image src={trading} alt="OX" height={h} />} name='Lockin Perps' backgroundcolor={variables.discordColor} />
-        <Button link='https://lock.wtf' icon={<Image src={logo} alt="OX" height={h} />} name='Lockin WTF' backgroundcolor={variables.discordColor} />
-        <Button link='https://www.lockinsol.com/' icon={<Image src={logo} alt="LockininSol" height={h} />} name='LockininSol' backgroundcolor={variables.discordColor} />
+        <MessengerButton promptData={promptData} />
+        <br />
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
+          <Canvas>
+            <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 10}/>
+          </Canvas>
+        </div>
       </Container>
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
-        <Canvas>
-          <RainingLockersBackground holders={holderdata?.totalHolders}/>
-        </Canvas>
-      </div>
-    </Suspense>
+  </Suspense>
   );
 }
