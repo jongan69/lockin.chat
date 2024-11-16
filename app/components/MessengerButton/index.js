@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ForwardToInbox as MessengerIcon } from '@mui/icons-material';
 import useSWR from 'swr';
 import ReactMarkdown from 'react-markdown';
@@ -16,6 +16,14 @@ export default function MessengerButton({ promptData }) {
   });
 
   console.log('Fetched messages:', messages); // Debugging line
+
+  const chatBodyRef = useRef(null);
+
+  useEffect(() => {
+    if (isChatOpen && chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [isChatOpen, messages]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
@@ -47,7 +55,7 @@ export default function MessengerButton({ promptData }) {
             <h4>Lockin with Us</h4>
             <button onClick={() => setIsChatOpen(false)}>Close</button>
           </div>
-          <div className="chat-body">
+          <div className="chat-body" ref={chatBodyRef}>
             {messages?.slice().reverse().map((msg, index) => (
               <div
                 key={index}
