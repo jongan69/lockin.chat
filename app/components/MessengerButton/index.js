@@ -15,7 +15,7 @@ export default function MessengerButton({ promptData }) {
     refreshInterval: 5000, // Poll every 5 seconds
   });
 
-  console.log('Fetched messages:', messages); // Debugging line
+  // console.log('Fetched messages:', messages); // Debugging line
 
   const chatBodyRef = useRef(null);
 

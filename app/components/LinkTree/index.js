@@ -10,6 +10,8 @@ import RainingLockersBackground from '../Three/RainingLockins';
 import { translations } from './translations';
 import LanguageSelector from './LanguageSelector';
 import MessengerButton from '../MessengerButton';
+import RSIChart from '../RSIChart';
+import PrisonProgressBar from '../PrisonProgressBar';
 
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
@@ -47,7 +49,11 @@ export default function LinkTree() {
   const [totalholders, setTotalHolders] = useState();
   const [language, setLanguage] = useState('en');
   const [promptData, setPromptData] = useState();
-  
+  const [rsiData, setRsiData] = useState([]);
+  const [rsiLabels, setRsiLabels] = useState([]);
+  const [lsiData, setLsiData] = useState([]);
+  const oversoldThreshold = 30;
+
   const largestPrisonPopulation = 28500;
 
   async function fetchData() {
@@ -57,13 +63,15 @@ export default function LinkTree() {
         oxtickerdata,
         oxpricedata,
         heliusholderdata,
-        holderscandata
+        holderscandata,
+        oxcandleresponse
       ] = await Promise.all([
         fetch('/api/price', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/oxtickerdata', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/oxpricedata', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(res => res.json()),
-        fetch('/api/holderscan', { cache: 'no-store' }).then(res => res.json())
+        fetch('/api/holderscan', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/oxcandledata', { cache: 'no-store' }).then(res => res.json())
       ]);
 
       setJupPriceData(pricedata);
@@ -71,6 +79,19 @@ export default function LinkTree() {
       setOxPriceData(oxpricedata);
       setHolderData(heliusholderdata);
       setHolderScan(holderscandata);
+
+      if (oxcandleresponse) {
+        setRsiData(oxcandleresponse.rsi);
+        setLsiData(oxcandleresponse.lsi);
+        const labels = oxcandleresponse.candles.map(candle => {
+          const date = new Date(parseInt(candle.openedAt));
+          const day = date.getDate().toString().padStart(2, '0');
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const year = date.getFullYear();
+          return `${month}/${day}/${year}`;
+        });
+        setRsiLabels(labels);
+      }
 
       if (holderscandata?.currentHolders) {
         setTotalHolders(holderscandata.currentHolders);
@@ -132,6 +153,13 @@ export default function LinkTree() {
     return Math.abs(jupiterPrice - oxLowPrice) <= threshold;
   };
 
+  const isGoodEntry = () => {
+    if (!rsiData.length || !lsiData.length) return false;
+    const latestRSI = rsiData[rsiData.length - 1];
+    const latestLSI = lsiData[lsiData.length - 1];
+    return latestRSI < oversoldThreshold && latestLSI < oversoldThreshold;
+  };
+
   return (
     <Suspense fallback={<h2>🌀 Loading...</h2>}>
       <Container>
@@ -155,24 +183,28 @@ export default function LinkTree() {
           <p>{translate('oxHigh')}: {oxpricedata?.high24h || 'N/A'}</p>
           <p>{translate('oxLow')}: {oxpricedata?.low24h || 'N/A'}</p>
           <br/>
+
           {isPriceClose() && (
             <p className='text-center' style={{ color: 'green', fontWeight: 'bold' }}>
               LOCK IN LOOKS GREAT
             </p>
           )}
 
-          <div className="status-bar">
-            <p>{translate('holdersCompared')}</p>
-            <div className="progress-bar">
-              <div
-                className="progress"
-                style={{
-                  width: `${(totalholders / largestPrisonPopulation) * 100 || 0}%`,
-                }}
-              ></div>
-            </div>
-            <p>{((totalholders / largestPrisonPopulation) * 100 || 0).toFixed(2)}% {translate('progressComplete')}</p>
-          </div>
+          <br/>
+          <RSIChart rsiLabels={rsiLabels} rsiData={rsiData} lsiData={lsiData} />
+          <br/>
+          <br/>
+          {isGoodEntry() && (
+            <p className='text-center' style={{ color: 'blue', fontWeight: 'bold' }}>
+              Good Entry Point Detected!
+            </p>
+          )}
+          
+          <PrisonProgressBar 
+            totalHolders={totalholders} 
+            largestPrisonPopulation={largestPrisonPopulation} 
+            translate={translate} 
+          />
           <br />
 
           <Button 
