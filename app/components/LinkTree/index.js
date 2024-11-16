@@ -40,6 +40,10 @@ function formatNumberWithSuffix(number) {
   return num.toFixed(2);
 }
 
+function getLargerNumber(num1, num2) {
+  return num1 > num2 ? num1 : num2;
+}
+
 export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
   const [oxtickerdata, setOxTickerData] = useState();
@@ -173,7 +177,7 @@ export default function LinkTree() {
           />
           <br/>
           <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
-          <p>{translate('totalJeets')}: {holderdata?.RetardedAssJeetFaggots?.toLocaleString() || 'N/A'}</p>
+          <p>{translate('totalJeets')}: {getLargerNumber(holderdata?.RetardedAssJeetFaggots, holderscan?.totalSellers)?.toLocaleString() || 'N/A'}</p>
           <p>{translate('holdersOver10USD')}: {holderscan?.holdersOver10USD?.toLocaleString() || 'N/A'}</p>
           <p>{translate('marketCap')}: ${holderscan?.marketCap?.toLocaleString() || 'N/A'}</p>
           <p>{translate('supply')}: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>

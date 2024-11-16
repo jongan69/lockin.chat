@@ -5,7 +5,7 @@ const PrisonProgressBar = ({ totalHolders, largestPrisonPopulation, translate })
 
   return (
     <div className="status-bar">
-      <p>{translate('holdersCompared')} {totalHolders}</p>
+      <p>{translate('holdersCompared')} {largestPrisonPopulation}</p>
       <div className="progress-bar">
         <div
           className="progress"

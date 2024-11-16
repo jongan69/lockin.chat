@@ -8,12 +8,13 @@ export async function GET(
             .then(res => res.json())
 
         const currentHolders = response.data?.currentHolders;
+        const totalUniqueWallets = response.data?.totalUniqueWallets;
+        const totalSellers = totalUniqueWallets - currentHolders;
         const supply = response.data?.supply;
         const marketCap = response.data?.marketCap;
         const marketCapOverHolders = response?.data?.marketCapOverHolders;
         const holdersOver10USD = response?.data?.holdersOver10USD;
-        // console.log(`Current Holders: ${currentHolders}, Supply: ${supply}, Market Cap: ${marketCap}, Market Cap Over Holders: ${marketCapOverHolders}, Holders Over 10 USD: ${holdersOver10USD}`);
-        return Response.json({ currentHolders, supply, marketCap, marketCapOverHolders, holdersOver10USD });
+        return Response.json({ currentHolders, supply, marketCap, marketCapOverHolders, holdersOver10USD, totalSellers });
     } catch (error: any) {
         console.error(`Error fetching price data: ${error}`);
         return Response.json({ error: 'failed to load data' })

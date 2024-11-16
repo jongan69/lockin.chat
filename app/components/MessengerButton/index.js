@@ -78,7 +78,7 @@ export default function MessengerButton({ promptData }) {
           <div className="chat-footer">
             <input
               type="text"
-              placeholder="What the lock?..."
+              placeholder="Need help locking in?"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
