@@ -48,11 +48,14 @@ export default function LinkTree() {
   const [juppricedata, setJupPriceData] = useState();
   const [oxtickerdata, setOxTickerData] = useState();
   const [oxpricedata, setOxPriceData] = useState();
+  const [oxcandleresponse, setOxCandleResponse] = useState();
   const [holderdata, setHolderData] = useState();
   const [holderscan, setHolderScan] = useState();
   const [totalholders, setTotalHolders] = useState();
   const [language, setLanguage] = useState('en');
   const [promptData, setPromptData] = useState();
+  const [currentRsi, setCurrentRsi] = useState();
+  const [currentLsi, setCurrentLsi] = useState();
   const [rsiData, setRsiData] = useState([]);
   const [rsiLabels, setRsiLabels] = useState([]);
   const [lsiData, setLsiData] = useState([]);
@@ -85,9 +88,12 @@ export default function LinkTree() {
       setHolderScan(holderscandata);
 
       if (oxcandleresponse) {
-        setRsiData(oxcandleresponse.rsi);
-        setLsiData(oxcandleresponse.lsi);
-        const labels = oxcandleresponse.candles.map(candle => {
+        setOxCandleResponse(oxcandleresponse);
+        setCurrentRsi(oxcandleresponse?.rsi[oxcandleresponse?.rsi?.length - 1]);
+        setCurrentLsi(oxcandleresponse?.lsi[oxcandleresponse?.lsi?.length - 1]);
+        setRsiData(oxcandleresponse?.rsi);
+        setLsiData(oxcandleresponse?.lsi);
+        const labels = oxcandleresponse?.candles?.map(candle => {
           const date = new Date(parseInt(candle.openedAt));
           const day = date.getDate().toString().padStart(2, '0');
           const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -106,8 +112,9 @@ export default function LinkTree() {
       setPromptData({
         language: language,
         candledataAndRsiAndLsi: oxcandleresponse,
-        currentRsi: rsiData[rsiData?.length - 1],
-        currentLsi: lsiData[lsiData?.length - 1],
+        currentRsi: currentRsi,
+        currentLsi: currentLsi,
+        lsiDescription: "The standard RSI is calculated using a 14-period by default. Volume Weighting: If enabled, the LSI (Lockedin Strength Indictaor) modifies the RSI by weighting it based on the volume relative to its moving average. This emphasizes periods of high or low volume, which can be particularly useful for Solana-based assets that might have unique volume profiles.",
         oxfunurl: 'https://ox.fun/x/lockin',
         dexscreenerurl: 'https://dexscreener.com/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
         moonshoturl: 'https://moonshot.money/LOCKIN?ref=vtsmoh24uf',
@@ -178,6 +185,9 @@ export default function LinkTree() {
             title={translate('title')} 
             subtitle={translate('subtitle')} 
           />
+          <p>RSI: {currentRsi || 'N/A'}</p>
+          <p>LSI: {currentLsi || 'N/A'}</p>
+          {/* <p>{JSON.stringify(oxcandleresponse) || 'N/A'}</p> */} 
           <br/>
           <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
           <p>{translate('totalJeets')}: {getLargerNumber(holderdata?.RetardedAssJeetFaggots, holderscan?.totalSellers)?.toLocaleString() || 'N/A'}</p>
