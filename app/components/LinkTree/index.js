@@ -56,7 +56,7 @@ export default function LinkTree() {
   const [rsiData, setRsiData] = useState([]);
   const [rsiLabels, setRsiLabels] = useState([]);
   const [lsiData, setLsiData] = useState([]);
-  const oversoldThreshold = 30;
+  const oversoldThreshold = 40;
 
   const largestPrisonPopulation = 28500;
 
