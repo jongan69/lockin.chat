@@ -105,18 +105,19 @@ export default function LinkTree() {
 
       setPromptData({
         language: language,
+        candledataAndRsiAndLsi: oxcandleresponse,
         oxfunurl: 'https://ox.fun/x/lockin',
         dexscreenerurl: 'https://dexscreener.com/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
         moonshoturl: 'https://moonshot.money/LOCKIN?ref=vtsmoh24uf',
         raydiumurl: 'https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N',
         phantomurl: 'https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs',
         bonkurl: 'https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
-        price: pricedata.price,
+        price: pricedata?.price,
         totalHolders: totalholders,
-        marketCap: holderscandata.marketCap,
-        supply: holderscandata.supply,
-        high24h: oxpricedata.high24h,
-        low24h: oxpricedata.low24h,
+        marketCap: holderscandata?.marketCap,
+        supply: holderscandata?.supply,
+        high24h: oxpricedata?.high24h,
+        low24h: oxpricedata?.low24h,
       });
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -158,7 +159,7 @@ export default function LinkTree() {
   };
 
   const isGoodEntry = () => {
-    if (!rsiData.length || !lsiData.length) return false;
+    if (!rsiData?.length || !lsiData?.length) return false;
     const latestRSI = rsiData[rsiData.length - 1];
     const latestLSI = lsiData[lsiData.length - 1];
     return latestRSI < oversoldThreshold && latestLSI < oversoldThreshold;
@@ -195,8 +196,9 @@ export default function LinkTree() {
           )}
 
           <br/>
-          <RSIChart rsiLabels={rsiLabels} rsiData={rsiData} lsiData={lsiData} />
+          {rsiLabels?.length > 0 && rsiData?.length > 0 && lsiData?.length > 0 && <RSIChart rsiLabels={rsiLabels} rsiData={rsiData} lsiData={lsiData} />}
           <br/>
+
           <br/>
           {isGoodEntry() && (
             <p className='text-center' style={{ color: 'blue', fontWeight: 'bold' }}>
@@ -204,11 +206,11 @@ export default function LinkTree() {
             </p>
           )}
           
-          <PrisonProgressBar 
+          {totalholders && <PrisonProgressBar 
             totalHolders={totalholders} 
             largestPrisonPopulation={largestPrisonPopulation} 
             translate={translate} 
-          />
+          />}
           <br />
 
           <Button 
