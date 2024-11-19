@@ -207,6 +207,7 @@ export default function LinkTree() {
 
           <br/>
           {rsiLabels?.length > 0 && rsiData?.length > 0 && lsiData?.length > 0 && <RSIChart rsiLabels={rsiLabels} rsiData={rsiData} lsiData={lsiData} />}
+          <br/>
           <p>RSI: {currentRsi || 'N/A'}</p>
           <p>LSI: {currentLsi || 'N/A'}</p>
           <br/>
