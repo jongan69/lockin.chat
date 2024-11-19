@@ -106,6 +106,8 @@ export default function LinkTree() {
       setPromptData({
         language: language,
         candledataAndRsiAndLsi: oxcandleresponse,
+        currentRsi: rsiData[rsiData.length - 1],
+        currentLsi: lsiData[lsiData.length - 1],
         oxfunurl: 'https://ox.fun/x/lockin',
         dexscreenerurl: 'https://dexscreener.com/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
         moonshoturl: 'https://moonshot.money/LOCKIN?ref=vtsmoh24uf',
