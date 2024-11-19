@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
-    const messages = await Message.find().sort({ timestamp: -1 });
+    const messages = await Message.find().sort({ timestamp: 1 });
     return Response.json(messages);
   } catch (error) {
     return Response.json({ error: 'Failed to retrieve messages' });

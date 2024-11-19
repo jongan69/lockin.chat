@@ -1,23 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ForwardToInbox as MessengerIcon } from '@mui/icons-material';
-import useSWR from 'swr';
+import { useChat } from 'ai/react';
 import ReactMarkdown from 'react-markdown';
+import useSWR from 'swr';
 import './styles.css';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function MessengerButton({ promptData }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [newMessage, setNewMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { messages, input, setInput, append } = useChat();
+  const chatBodyRef = useRef(null);
+  const [isSending, setIsSending] = useState(false);
 
-  const { data: messages, mutate } = useSWR('/api/messages', fetcher, {
+  const { data: serverMessages, mutate } = useSWR('/api/messages', fetcher, {
     refreshInterval: 5000, // Poll every 5 seconds
   });
-
-  // console.log('Fetched messages:', messages); // Debugging line
-
-  const chatBodyRef = useRef(null);
 
   useEffect(() => {
     if (isChatOpen && chatBodyRef.current) {
@@ -26,21 +24,39 @@ export default function MessengerButton({ promptData }) {
   }, [isChatOpen, messages]);
 
   const handleSendMessage = async () => {
-    if (newMessage.trim()) {
-      setIsLoading(true);
+    if (input.trim()) {
+      setIsSending(true);
+      setInput('');
+
+      // Post the message to the server
       await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newMessage, role: "user" }),
+        body: JSON.stringify({ text: input, role: 'user' }),
       });
-      await fetch('/api/ai', {
+
+      // Append the message locally
+      append({ content: input, role: 'user' });
+
+      // Send the message to the AI endpoint
+      const aiResponse = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newMessage, role: "user", promptData: promptData }),
+        body: JSON.stringify({
+          messages: [{ content: input, role: 'user' }],
+          promptData: promptData,
+        }),
       });
-      setNewMessage('');
-      mutate(); // Revalidate the SWR cache to fetch new messages
-      setIsLoading(false);
+
+      const aiData = await aiResponse.json();
+
+      // Append the AI's response
+      append({ content: aiData.content, role: 'assistant' });
+
+      // Revalidate the SWR cache to fetch new messages
+      mutate();
+
+      setIsSending(false);
     }
   };
 
@@ -56,7 +72,7 @@ export default function MessengerButton({ promptData }) {
             <button onClick={() => setIsChatOpen(false)}>Close</button>
           </div>
           <div className="chat-body" ref={chatBodyRef}>
-            {messages?.slice().reverse().map((msg, index) => (
+            {(serverMessages || []).map((msg, index) => (
               <div
                 key={index}
                 className={`message-bubble ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
@@ -79,14 +95,17 @@ export default function MessengerButton({ promptData }) {
             <input
               type="text"
               placeholder="Need help locking in?"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={async (e) => {
+                if (e.key === 'Enter') {
+                  handleSendMessage();
+                }
+              }}
             />
-            {isLoading ? (
-              <div className="loader"></div>
-            ) : (
-              <button className="send-button" onClick={handleSendMessage}>Send</button>
-            )}
+            <button className="send-button" onClick={handleSendMessage} disabled={isSending}>
+              {isSending ? 'Sending...' : 'Send'}
+            </button>
           </div>
         </div>
       )}
