@@ -185,8 +185,6 @@ export default function LinkTree() {
             title={translate('title')} 
             subtitle={translate('subtitle')} 
           />
-          <p>RSI: {currentRsi || 'N/A'}</p>
-          <p>LSI: {currentLsi || 'N/A'}</p>
           {/* <p>{JSON.stringify(oxcandleresponse) || 'N/A'}</p> */} 
           <br/>
           <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
@@ -209,6 +207,8 @@ export default function LinkTree() {
 
           <br/>
           {rsiLabels?.length > 0 && rsiData?.length > 0 && lsiData?.length > 0 && <RSIChart rsiLabels={rsiLabels} rsiData={rsiData} lsiData={lsiData} />}
+          <p>RSI: {currentRsi || 'N/A'}</p>
+          <p>LSI: {currentLsi || 'N/A'}</p>
           <br/>
 
           <br/>
