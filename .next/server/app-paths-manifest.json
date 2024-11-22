@@ -1,13 +1,12 @@
 {
-  "/page": "app/page.js",
-  "/api/price/route": "app/api/price/route.js",
   "/api/oxtickerdata/route": "app/api/oxtickerdata/route.js",
   "/api/oxpricedata/route": "app/api/oxpricedata/route.js",
   "/api/heliusmarketdata/route": "app/api/heliusmarketdata/route.js",
-  "/api/messages/route": "app/api/messages/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/chat/route": "app/api/chat/route.js",
   "/api/holderscan/route": "app/api/holderscan/route.js",
+  "/api/price/route": "app/api/price/route.js",
+  "/api/messages/route": "app/api/messages/route.js",
   "/api/oxcandledata/route": "app/api/oxcandledata/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
   "/api/detectLanguage/route": "app/api/detectLanguage/route.js"
 }
