@@ -20,7 +20,13 @@ const moonLogo = require('../../images/moon.svg');
 const rayLogo = require('../../images/raydium.svg');
 const logo = require('../../images/logo.svg');
 const phantomLogo = require('../../images/phantom.svg');
+const bagsLogo = require('../../images/bags.jpg');
+const twitterLogo = require('../../images/twitter.svg');
+const autosnipeLogo = require('../../images/autosnipe.png');
+const photonLogo = require('../../images/photon.jpg');
 const wtf = require('../../images/wtf.svg');
+const h = 20;
+const CA = '8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5';
 
 function formatNumberWithSuffix(number) {
   if (number === undefined || number === null) {
@@ -116,11 +122,11 @@ export default function LinkTree() {
         currentLsi: currentLsi,
         lsiDescription: "The standard RSI is calculated using a 14-period by default. Volume Weighting: If enabled, the LSI (Lockedin Strength Indictaor) modifies the RSI by weighting it based on the volume relative to its moving average. This emphasizes periods of high or low volume, which can be particularly useful for Solana-based assets that might have unique volume profiles.",
         oxfunurl: 'https://ox.fun/x/lockin',
-        dexscreenerurl: 'https://dexscreener.com/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
-        moonshoturl: 'https://moonshot.money/LOCKIN?ref=vtsmoh24uf',
-        raydiumurl: 'https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N',
-        phantomurl: 'https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs',
-        bonkurl: 'https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5',
+        dexscreenerurl: `https://dexscreener.com/solana/${CA}`,
+        moonshoturl: `https://moonshot.money/LOCKIN?ref=vtsmoh24uf`,
+        raydiumurl: `https://raydium.io/swap/?inputMint=sol&outputMint=${CA}&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N`,
+        phantomurl: `https://phantom.app/tokens/solana/${CA}?referralId=m0ezk5sfqrs`,
+        bonkurl: `https://t.me/bonkbot_bot?start=ref_jyzn2_ca_${CA}`,
         price: pricedata?.price,
         totalHolders: totalholders,
         marketCap: holderscandata?.marketCap,
@@ -228,49 +234,55 @@ export default function LinkTree() {
 
           <Button 
             link='https://www.lockinsol.com/' 
-            icon={<Image src={logo} alt="Official Site" height={20} />} 
+            icon={<Image src={logo} alt="Official Site" height={h} />} 
             name={translate('buttonOfficialSite')} 
             backgroundcolor={variables.discordColor} 
           />
           <Button 
-            link='https://phantom.app/tokens/solana/8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5?referralId=m0ezk5sfqrs' 
-            icon={<Image src={phantomLogo} alt="Phantom" height={20} />} 
+            link={`https://phantom.app/tokens/solana/${CA}?referralId=m0ezk5sfqrs`} 
+            icon={<Image src={phantomLogo} alt="Phantom" height={h} />} 
             name='' 
             backgroundcolor={variables.discordColor} 
           />
           <Button 
             link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' 
-            icon={<Image src={moonLogo} height={20} alt="Moonshot" />} 
+            icon={<Image src={moonLogo} height={h} alt="Moonshot" />} 
             name={translate('buttonMoonshot')} 
             backgroundcolor={variables.discordColor} 
           />
           <Button 
-            link='https://dexscreener.com/solana/atwmaa6t9t8cq8xccccfpgdnnqyxhscunuy6wvri7fke' 
-            icon={<Image src={dexLogo} height={20} alt="DexScreener" />} 
+            link={`https://dexscreener.com/solana/${CA}`} 
+            icon={<Image src={dexLogo} height={h} alt="DexScreener" />} 
             name={translate('buttonDexScreener')} 
             backgroundcolor={variables.discordColor} 
           />
           <Button 
-            link='https://raydium.io/swap/?inputMint=sol&outputMint=8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N' 
-            icon={<Image src={rayLogo} height={20} alt="Raydium" />} 
+            link={`https://raydium.io/swap/?inputMint=sol&outputMint=${CA}&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N`} 
+            icon={<Image src={rayLogo} height={h} alt="Raydium" />} 
             name={translate('buttonRaydium')} 
             backgroundcolor={variables.discordColor} 
           />
           <Button 
-            link='https://ox.fun/x/lockin' 
-            icon={<Image src={trading} alt="OX" height={20} />} 
+            link='https://ox.fun/en/markets/LOCKIN-USD-SWAP-LIN?shareAccountId=lockin' 
+            icon={<Image src={trading} alt="OX" height={h} />} 
             name={translate('buttonLockinPerps')} 
             backgroundcolor={variables.discordColor} 
           />
+          <Button link={`https://bags.fm/b/$LOCK`} icon={<Image src={bagsLogo} height={h} alt="Bags" />} name='Bags' backgroundcolor={variables.whatsappColor} />
+          <Button link={`https://x.com/i/communities/1829212924977570199`} icon={<Image src={twitterLogo} height={h} alt="Twitter" />} name='Twitter' backgroundcolor={variables.twitterColor} />
+          <Button link={`https://autosnipe.ai/details/${CA}/?referral_code=lockin`} icon={<Image src={autosnipeLogo} alt="Autosnipe" height={h} />} name='Autosnipe' backgroundcolor={variables.whatsappColor} />
+          <Button link={`https://photon-sol.tinyastro.io/en/r/@jongan69/${CA}`} icon={<Image src={photonLogo} alt="Photon" height={h} />} name='Photon' backgroundcolor={variables.whatsappColor} />
+
           <Button 
-            link='https://t.me/bonkbot_bot?start=ref_jyzn2_ca_8Ki8DpuWNxu9VsS3kQbarsCWMcFGWkzzA8pUPto9zBd5' 
-            icon={<Image src={bonkLogo} alt="Bonk" height={20} />} 
+            link={`https://t.me/bonkbot_bot?start=ref_jyzn2_ca_${CA}`} 
+            icon={<Image src={bonkLogo} alt="Bonk" height={h} />} 
             name={translate('buttonBonkBuy')} 
             backgroundcolor={variables.discordColor} 
           />
+
           <Button 
             link='https://lock.wtf' 
-            icon={<Image src={wtf} alt="WTF" height={20} />} 
+            icon={<Image src={wtf} alt="WTF" height={h} />} 
             name={translate('buttonLockWTF')} 
             backgroundcolor={variables.discordColor} 
           />
