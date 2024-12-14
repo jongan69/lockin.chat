@@ -12,8 +12,8 @@ const BotTradingInfo = ({ pnl, positions, translate }) => {
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div className="bg-slate-800 p-2 rounded">
           <p className="font-semibold">{translate('botPNL')}</p>
-          <p className={pnl.amount >= 0 ? "text-green-400" : "text-red-400"}>
-            ${pnl.amount.toFixed(5)} {pnl.currency}
+          <p className={pnl.usd.amount >= 0 ? "text-green-400" : "text-red-400"}>
+            ${pnl.usd.amount.toFixed(5)} {pnl.usd.currency} ({pnl.ox.amount.toFixed(5)} {pnl.ox.currency})
           </p>
         </div>
         <div className="bg-slate-800 p-2 rounded">

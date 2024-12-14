@@ -192,64 +192,56 @@ async function placeOrder(side: 'BUY' | 'SELL', quantity: string, price: string)
 async function calculatePNL(positions: any[], currentPrice: number) {
   console.log('Calculating PNL with current price:', currentPrice);
   let totalPNLUSD = 0;
+  let totalPNLOX = 0;
 
-  for (const positionWrapper of positions) {
-    try {
-      // Handle nested positions array
-      const positionsArray = positionWrapper.positions || [positionWrapper];
-      
-      for (const position of positionsArray) {
-        const positionData = {
-          // For working orders
-          price: position.price || position.orderPrice,
-          quantity: position.quantity || position.orderQuantity,
-          side: position.side || position.orderSide,
-          // For open positions
-          entryPrice: position.entryPrice,
-          positionQuantity: position.position,
-          positionSide: position.position > 0 ? 'LONG' : 'SHORT'
-        };
+  try {
+    const oxPriceResponse = await fetch('https://api.ox.fun/v3/tickers?marketCode=OX-USD-SWAP-LIN');
+    const oxPriceData = await oxPriceResponse.json();
+    const oxUsdPrice = parseFloat(oxPriceData.data[0]?.markPrice || '0');
+    
+    console.log('OX-USD Price:', oxUsdPrice);
 
-        // Try working order format first
-        if (positionData.price && positionData.quantity && positionData.side) {
-          const entryPrice = parseFloat(positionData.price);
-          const quantity = parseFloat(positionData.quantity);
-          const side = String(positionData.side).toUpperCase();
-
-          if (!isNaN(entryPrice) && !isNaN(quantity)) {
-            if (side === 'BUY') {
-              totalPNLUSD += (currentPrice - entryPrice) * quantity;
-            } else if (side === 'SELL') {
-              totalPNLUSD += (entryPrice - currentPrice) * quantity;
-            }
+    for (const positionWrapper of positions) {
+      try {
+        const positionsArray = positionWrapper.positions || [positionWrapper];
+        
+        for (const position of positionsArray) {
+          if (position.positionPnl) {
+            const pnlInOX = parseFloat(position.positionPnl);
+            const pnlInUSD = pnlInOX * oxUsdPrice;
+            
+            totalPNLOX += pnlInOX;
+            totalPNLUSD += pnlInUSD;
+            
+            console.log('PNL Calculation:', {
+              pnlInOX,
+              oxUsdPrice,
+              pnlInUSD
+            });
           }
         }
-        // Try open position format
-        else if (positionData.entryPrice && positionData.positionQuantity) {
-          const entryPrice = parseFloat(positionData.entryPrice);
-          const quantity = Math.abs(parseFloat(positionData.positionQuantity));
-          const side = positionData.positionQuantity > 0 ? 'LONG' : 'SHORT';
-
-          if (!isNaN(entryPrice) && !isNaN(quantity)) {
-            if (side === 'LONG') {
-              totalPNLUSD += (currentPrice - entryPrice) * quantity;
-            } else if (side === 'SHORT') {
-              totalPNLUSD += (entryPrice - currentPrice) * quantity;
-            }
-          }
-        } else {
-          console.log('Skipping position due to missing data:', position);
-        }
+      } catch (error) {
+        console.error('Error calculating PNL for position:', positionWrapper, error);
       }
-    } catch (error) {
-      console.error('Error calculating PNL for position:', positionWrapper, error);
     }
+  } catch (error) {
+    console.error('Error fetching OX-USD price:', error);
   }
 
-  console.log('Calculated total PNL (USD):', totalPNLUSD);
+  console.log('Calculated PNL:', {
+    USD: totalPNLUSD,
+    OX: totalPNLOX
+  });
+
   return {
-    amount: totalPNLUSD,
-    currency: 'USD'
+    usd: {
+      amount: totalPNLUSD,
+      currency: 'USD'
+    },
+    ox: {
+      amount: totalPNLOX,
+      currency: 'OX'
+    }
   };
 }
 
