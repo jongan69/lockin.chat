@@ -135,6 +135,7 @@ export default function LinkTree() {
         supply: holderscandata?.supply,
         high24h: oxpricedata?.high24h,
         low24h: oxpricedata?.low24h,
+        botTradingData: oxcandleresponse?.trading,
       });
     } catch (error) {
       console.error('Error fetching data:', error);
