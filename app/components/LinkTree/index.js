@@ -12,6 +12,7 @@ import LanguageSelector from './LanguageSelector';
 import MessengerButton from '../MessengerButton';
 import RSIChart from '../RSIChart';
 import PrisonProgressBar from '../PrisonProgressBar';
+import BotTradingInfo from '../BotTradingInfo';
 
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
@@ -32,7 +33,7 @@ function formatNumberWithSuffix(number) {
   if (number === undefined || number === null) {
     return 'N/A';
   }
-  
+
   const num = parseFloat(number);
   if (num >= 1e15) {
     return (num / 1e15).toFixed(2) + 'M';
@@ -66,7 +67,7 @@ export default function LinkTree() {
   const [rsiLabels, setRsiLabels] = useState([]);
   const [lsiData, setLsiData] = useState([]);
   const oversoldThreshold = 40;
-
+  const [currentPNL, setCurrentPNL] = useState(0);
   const largestPrisonPopulation = 28500;
 
   async function fetchData() {
@@ -99,6 +100,7 @@ export default function LinkTree() {
         setCurrentLsi(oxcandleresponse?.lsi[oxcandleresponse?.lsi?.length - 1]);
         setRsiData(oxcandleresponse?.rsi);
         setLsiData(oxcandleresponse?.lsi);
+        setCurrentPNL(oxcandleresponse?.trading?.pnl);
         const labels = oxcandleresponse?.candles?.map(candle => {
           const date = new Date(parseInt(candle.openedAt));
           const day = date.getDate().toString().padStart(2, '0');
@@ -186,24 +188,24 @@ export default function LinkTree() {
         <LanguageSelector currentLanguage={language} onChangeLanguage={handleLanguageChange} />
         <br />
         <div className='text-center text-xl bg-slate-800 p-4 mb-4 rounded'>
-          <Header 
-            picture="profile.png" 
-            title={translate('title')} 
-            subtitle={translate('subtitle')} 
+          <Header
+            picture="profile.png"
+            title={translate('title')}
+            subtitle={translate('subtitle')}
           />
-          {/* <p>{JSON.stringify(oxcandleresponse) || 'N/A'}</p> */} 
-          <br/>
+          {/* <p>{JSON.stringify(oxcandleresponse) || 'N/A'}</p> */}
+          <br />
           <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
           <p>{translate('totalJeets')}: {getLargerNumber(holderdata?.RetardedAssJeetFaggots, holderscan?.totalSellers)?.toLocaleString() || 'N/A'}</p>
           <p>{translate('holdersOver10USD')}: {holderscan?.holdersOver10USD?.toLocaleString() || 'N/A'}</p>
           <p>{translate('marketCap')}: ${holderscan?.marketCap?.toLocaleString() || 'N/A'}</p>
           <p>{translate('supply')}: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>
-          <br/>
+          <br />
           <p>{translate('jupiterPrice')}: {juppricedata?.uiFormmatted || 'N/A'}</p>
           <p>{translate('oxPrice')}: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
           <p>{translate('oxHigh')}: {oxpricedata?.high24h || 'N/A'}</p>
           <p>{translate('oxLow')}: {oxpricedata?.low24h || 'N/A'}</p>
-          <br/>
+          <br />
 
           {isPriceClose() && (
             <p className='text-center' style={{ color: 'green', fontWeight: 'bold' }}>
@@ -211,80 +213,89 @@ export default function LinkTree() {
             </p>
           )}
 
-          <br/>
+          <br />
           {rsiLabels?.length > 0 && rsiData?.length > 0 && lsiData?.length > 0 && <RSIChart rsiLabels={rsiLabels} rsiData={rsiData} lsiData={lsiData} />}
-          <br/>
+          <br />
           <p>RSI: {currentRsi || 'N/A'}</p>
           <p>LSI: {currentLsi || 'N/A'}</p>
-          <br/>
+          <br />
 
-          <br/>
+          <br />
           {isGoodEntry() && (
-            <p className='text-center' style={{ color: 'blue', fontWeight: 'bold' }}>
-              Good Entry Point Detected!
-            </p>
+            <>
+              <p className='text-center' style={{ color: 'blue', fontWeight: 'bold' }}>
+                {translate('goodEntryPoint')}
+              </p>
+            </>
           )}
-          
-          {totalholders && <PrisonProgressBar 
-            totalHolders={totalholders} 
-            largestPrisonPopulation={largestPrisonPopulation} 
-            translate={translate} 
+
+          <br />
+          <BotTradingInfo
+            pnl={currentPNL}
+            positions={oxcandleresponse?.trading?.positions}
+            translate={translate}
+          />
+
+          {totalholders && <PrisonProgressBar
+            totalHolders={totalholders}
+            largestPrisonPopulation={largestPrisonPopulation}
+            translate={translate}
           />}
           <br />
 
-          <Button 
-            link='https://www.lockinsol.com/' 
-            icon={<Image src={logo} alt="Official Site" height={h} />} 
-            name={translate('buttonOfficialSite')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link='https://www.lockinsol.com/'
+            icon={<Image src={logo} alt="Official Site" height={h} />}
+            name={translate('buttonOfficialSite')}
+            backgroundcolor={variables.discordColor}
           />
-          <Button 
-            link={`https://phantom.app/tokens/solana/${CA}?referralId=m0ezk5sfqrs`} 
-            icon={<Image src={phantomLogo} alt="Phantom" height={h} />} 
-            name='' 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link={`https://phantom.app/tokens/solana/${CA}?referralId=m0ezk5sfqrs`}
+            icon={<Image src={phantomLogo} alt="Phantom" height={h} />}
+            name=''
+            backgroundcolor={variables.discordColor}
           />
-          <Button 
-            link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf' 
-            icon={<Image src={moonLogo} height={h} alt="Moonshot" />} 
-            name={translate('buttonMoonshot')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link='https://moonshot.money/LOCKIN?ref=vtsmoh24uf'
+            icon={<Image src={moonLogo} height={h} alt="Moonshot" />}
+            name={translate('buttonMoonshot')}
+            backgroundcolor={variables.discordColor}
           />
-          <Button 
-            link={`https://dexscreener.com/solana/${CA}`} 
-            icon={<Image src={dexLogo} height={h} alt="DexScreener" />} 
-            name={translate('buttonDexScreener')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link={`https://dexscreener.com/solana/${CA}`}
+            icon={<Image src={dexLogo} height={h} alt="DexScreener" />}
+            name={translate('buttonDexScreener')}
+            backgroundcolor={variables.discordColor}
           />
-          <Button 
-            link={`https://raydium.io/swap/?inputMint=sol&outputMint=${CA}&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N`} 
-            icon={<Image src={rayLogo} height={h} alt="Raydium" />} 
-            name={translate('buttonRaydium')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link={`https://raydium.io/swap/?inputMint=sol&outputMint=${CA}&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N`}
+            icon={<Image src={rayLogo} height={h} alt="Raydium" />}
+            name={translate('buttonRaydium')}
+            backgroundcolor={variables.discordColor}
           />
-          <Button 
-            link='https://ox.fun/en/markets/LOCKIN-USD-SWAP-LIN?shareAccountId=lockin' 
-            icon={<Image src={trading} alt="OX" height={h} />} 
-            name={translate('buttonLockinPerps')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link='https://ox.fun/en/markets/LOCKIN-USD-SWAP-LIN?shareAccountId=lockin'
+            icon={<Image src={trading} alt="OX" height={h} />}
+            name={translate('buttonLockinPerps')}
+            backgroundcolor={variables.discordColor}
           />
           <Button link={`https://bags.fm/b/$LOCK`} icon={<Image src={bagsLogo} height={h} alt="Bags" />} name='Bags' backgroundcolor={variables.whatsappColor} />
           <Button link={`https://x.com/i/communities/1829212924977570199`} icon={<Image src={twitterLogo} height={h} alt="Twitter" />} name='Twitter' backgroundcolor={variables.twitterColor} />
           <Button link={`https://autosnipe.ai/details/${CA}/?referral_code=lockin`} icon={<Image src={autosnipeLogo} alt="Autosnipe" height={h} />} name='Autosnipe' backgroundcolor={variables.whatsappColor} />
           <Button link={`https://photon-sol.tinyastro.io/en/r/@jongan69/${CA}`} icon={<Image src={photonLogo} alt="Photon" height={h} />} name='Photon' backgroundcolor={variables.whatsappColor} />
 
-          <Button 
-            link={`https://t.me/bonkbot_bot?start=ref_jyzn2_ca_${CA}`} 
-            icon={<Image src={bonkLogo} alt="Bonk" height={h} />} 
-            name={translate('buttonBonkBuy')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link={`https://t.me/bonkbot_bot?start=ref_jyzn2_ca_${CA}`}
+            icon={<Image src={bonkLogo} alt="Bonk" height={h} />}
+            name={translate('buttonBonkBuy')}
+            backgroundcolor={variables.discordColor}
           />
 
-          <Button 
-            link='https://lock.wtf' 
-            icon={<Image src={wtf} alt="WTF" height={h} />} 
-            name={translate('buttonLockWTF')} 
-            backgroundcolor={variables.discordColor} 
+          <Button
+            link='https://lock.wtf'
+            icon={<Image src={wtf} alt="WTF" height={h} />}
+            name={translate('buttonLockWTF')}
+            backgroundcolor={variables.discordColor}
           />
         </div>
         <br />
@@ -292,10 +303,10 @@ export default function LinkTree() {
         <br />
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
-            <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 10}/>
+            <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 10} />
           </Canvas>
         </div>
       </Container>
-  </Suspense>
+    </Suspense>
   );
 }

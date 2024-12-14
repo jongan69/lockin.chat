@@ -21,6 +21,10 @@ export const translations = {
     buttonLockinPerps: 'Lockin Perps',
     buttonBonkBuy: 'Bonk Buy',
     buttonLockWTF: 'Lock.WTF',
+    botTrading: 'Bot Trading Stats',
+    botPNL: 'Current PNL',
+    botPositions: 'Active Positions',
+    goodEntryPoint: 'Good Entry Point Detected!'
   },
   fr: {
     title: 'Chat Lockin',
@@ -96,7 +100,7 @@ export const translations = {
     holdersOver10USD: '持有超过 10 美元的人',
     marketCap: '市值',
     supply: '供应量',
-    jupiterPrice: '木星价格',
+    jupiterPrice: '木星价���',
     oxPrice: 'OX 价格',
     oxHigh: 'OX 24 小时最高价',
     oxLow: 'OX 24 小时最低价',
