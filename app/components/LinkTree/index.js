@@ -119,7 +119,7 @@ export default function LinkTree() {
 
       setPromptData({
         language: language,
-        candledataAndRsiAndLsi: oxcandleresponse,
+        candledata: oxcandleresponse.candles,
         currentRsi: currentRsi,
         currentLsi: currentLsi,
         lsiDescription: "The standard RSI is calculated using a 14-period by default. Volume Weighting: If enabled, the LSI (Lockedin Strength Indictaor) modifies the RSI by weighting it based on the volume relative to its moving average. This emphasizes periods of high or low volume, which can be particularly useful for Solana-based assets that might have unique volume profiles.",
