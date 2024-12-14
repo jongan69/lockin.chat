@@ -88,38 +88,57 @@ function generateAuthHeaders(method: string, path: string, body: string = '') {
   return headers;
 }
 
-// Update getCurrentPositions function
+// Update getCurrentPositions function to get both working orders and open positions
 async function getCurrentPositions() {
   try {
-    const path = '/v3/orders/working';
-    const headers = generateAuthHeaders('GET', path);
+    // Get working orders
+    const ordersPath = '/v3/orders/working';
+    const ordersHeaders = generateAuthHeaders('GET', ordersPath);
     
-    const response = await fetch(`https://api.ox.fun${path}`, {
-      method: 'GET',
-      headers
-    });
+    // Get open positions
+    const positionsPath = '/v3/positions';
+    const positionsHeaders = generateAuthHeaders('GET', positionsPath);
+    
+    const [ordersResponse, positionsResponse] = await Promise.all([
+      fetch(`https://api.ox.fun${ordersPath}`, {
+        method: 'GET',
+        headers: ordersHeaders
+      }),
+      fetch(`https://api.ox.fun${positionsPath}`, {
+        method: 'GET',
+        headers: positionsHeaders
+      })
+    ]);
 
-    console.log('Response status:', response.status);
+    console.log('Orders response status:', ordersResponse.status);
+    console.log('Positions response status:', positionsResponse.status);
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+    const ordersText = await ordersResponse.text();
+    const positionsText = await positionsResponse.text();
+
+    let workingOrders = [];
+    let openPositions = [];
+
+    if (ordersText) {
+      const ordersData = JSON.parse(ordersText);
+      workingOrders = ordersData.success ? ordersData.data : [];
     }
 
-    const text = await response.text();
-    if (!text) return [];
-
-    try {
-      const data = JSON.parse(text);
-      return data.success ? data.data : [];
-    } catch (parseError) {
-      console.error('Error parsing JSON:', text);
-      return [];
+    if (positionsText) {
+      const positionsData = JSON.parse(positionsText);
+      openPositions = positionsData.success ? positionsData.data : [];
     }
+
+    return {
+      workingOrders,
+      openPositions
+    };
   } catch (error) {
     console.error('Error fetching positions:', error);
-    return [];
+    return {
+      workingOrders: [],
+      openPositions: []
+    };
   }
 }
 
@@ -169,25 +188,61 @@ async function placeOrder(side: 'BUY' | 'SELL', quantity: string, price: string)
   }
 }
 
-// Add this helper function at the top with other functions
+// Update the calculatePNL function to handle both working orders and open positions
 async function calculatePNL(positions: any[], currentPrice: number) {
   console.log('Calculating PNL with current price:', currentPrice);
   let totalPNLUSD = 0;
 
-  for (const position of positions) {
+  for (const positionWrapper of positions) {
     try {
-      const entryPrice = parseFloat(position.price);
-      const quantity = parseFloat(position.quantity);
-      const side = position.side.toUpperCase();
+      // Handle nested positions array
+      const positionsArray = positionWrapper.positions || [positionWrapper];
+      
+      for (const position of positionsArray) {
+        const positionData = {
+          // For working orders
+          price: position.price || position.orderPrice,
+          quantity: position.quantity || position.orderQuantity,
+          side: position.side || position.orderSide,
+          // For open positions
+          entryPrice: position.entryPrice,
+          positionQuantity: position.position,
+          positionSide: position.position > 0 ? 'LONG' : 'SHORT'
+        };
 
-      // Calculate PNL in USD
-      if (side === 'BUY') {
-        totalPNLUSD += (currentPrice - entryPrice) * quantity;
-      } else if (side === 'SELL') {
-        totalPNLUSD += (entryPrice - currentPrice) * quantity;
+        // Try working order format first
+        if (positionData.price && positionData.quantity && positionData.side) {
+          const entryPrice = parseFloat(positionData.price);
+          const quantity = parseFloat(positionData.quantity);
+          const side = String(positionData.side).toUpperCase();
+
+          if (!isNaN(entryPrice) && !isNaN(quantity)) {
+            if (side === 'BUY') {
+              totalPNLUSD += (currentPrice - entryPrice) * quantity;
+            } else if (side === 'SELL') {
+              totalPNLUSD += (entryPrice - currentPrice) * quantity;
+            }
+          }
+        }
+        // Try open position format
+        else if (positionData.entryPrice && positionData.positionQuantity) {
+          const entryPrice = parseFloat(positionData.entryPrice);
+          const quantity = Math.abs(parseFloat(positionData.positionQuantity));
+          const side = positionData.positionQuantity > 0 ? 'LONG' : 'SHORT';
+
+          if (!isNaN(entryPrice) && !isNaN(quantity)) {
+            if (side === 'LONG') {
+              totalPNLUSD += (currentPrice - entryPrice) * quantity;
+            } else if (side === 'SHORT') {
+              totalPNLUSD += (entryPrice - currentPrice) * quantity;
+            }
+          }
+        } else {
+          console.log('Skipping position due to missing data:', position);
+        }
       }
     } catch (error) {
-      console.error('Error calculating PNL for position:', position, error);
+      console.error('Error calculating PNL for position:', positionWrapper, error);
     }
   }
 
@@ -216,8 +271,8 @@ export async function GET(request: Request) {
     const candles = response.data.reverse();
     
     const { rsi, lsi } = calculateIndicators(candles);
-    const currentPositions = await getCurrentPositions();
-    console.log('Current positions:', currentPositions);
+    const positions = await getCurrentPositions();
+    console.log('Current positions:', positions);
     
     // Trading logic
     const currentRSI = rsi[rsi.length - 1];
@@ -241,8 +296,8 @@ export async function GET(request: Request) {
     const weightedRSI = (currentRSI + (currentLSI * LSI_MULTIPLIER)) / (1 + LSI_MULTIPLIER);
     console.log(`Weighted RSI: ${weightedRSI}`);
     
-    // Only trade if we don't have an existing position
-    if (currentPositions.length === 0) {
+    // Only trade if we don't have existing working orders or open positions
+    if (positions.workingOrders.length === 0 && positions.openPositions.length === 0) {
       console.log(`Checking trade conditions - Weighted RSI: ${weightedRSI}`);
       if (weightedRSI < OVERSOLD_THRESHOLD) {
         console.log('Placing buy order');
@@ -260,18 +315,20 @@ export async function GET(request: Request) {
         );
       }
     } else {
-      console.log(`Skipping trade - ${currentPositions.length} positions open`);
+      console.log(`Skipping trade - ${positions.workingOrders.length} working orders and ${positions.openPositions.length} open positions`);
     }
 
     // Get updated positions after potential new trade
     const updatedPositions = await getCurrentPositions();
     console.log('Updated positions after trading:', updatedPositions);
 
-    // Calculate current PNL
-    const currentPNL = await calculatePNL(updatedPositions, currentPrice);
+    // Calculate current PNL using all positions
+    const currentPNL = await calculatePNL([
+      ...updatedPositions.workingOrders,
+      ...updatedPositions.openPositions
+    ], currentPrice);
 
-    // Format the response to match what LinkTree expects
-    console.log('Successfully completed request processing');
+    // Return the response with separate working orders and open positions
     return Response.json({
       candles: candles.map((candle: any) => ({
         ...candle,
@@ -285,7 +342,10 @@ export async function GET(request: Request) {
         currentLSI,
         weightedRSI,
         orderResult,
-        positions: updatedPositions,
+        positions: {
+          workingOrders: updatedPositions.workingOrders,
+          openPositions: updatedPositions.openPositions
+        },
         pnl: currentPNL
       }
     });
