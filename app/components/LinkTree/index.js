@@ -118,7 +118,7 @@ export default function LinkTree() {
       }
 
       setPromptData({
-        language: language,
+        language: language || 'en',
         candledata: oxcandleresponse.candles,
         currentRsi: currentRsi,
         currentLsi: currentLsi,
