@@ -295,7 +295,7 @@ export default function LinkTree() {
           <Button
             link={`https://t.me/Lockinvideouploader_bot`}
             icon={<Image src={wtf} alt="Lockin Tiktok Uploader Bot" height={h} />}
-            name={'Lockin Video Uploader'}
+            name={'Lockin Tiktok Bot'}
             backgroundcolor={variables.discordColor}
           />
 
