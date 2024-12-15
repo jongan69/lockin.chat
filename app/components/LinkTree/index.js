@@ -262,12 +262,12 @@ export default function LinkTree() {
             name={translate('buttonMoonshot')}
             backgroundcolor={variables.discordColor}
           />
-          <Button
+          {/* <Button
             link={`https://dexscreener.com/solana/${CA}`}
             icon={<Image src={dexLogo} height={h} alt="DexScreener" />}
             name={translate('buttonDexScreener')}
             backgroundcolor={variables.discordColor}
-          />
+          /> */}
           <Button
             link={`https://raydium.io/swap/?inputMint=sol&outputMint=${CA}&referrer=9yA9LPCRv8p8V8ZvJVYErrVGWbwqAirotDTQ8evRxE5N`}
             icon={<Image src={rayLogo} height={h} alt="Raydium" />}
@@ -291,6 +291,21 @@ export default function LinkTree() {
             name={translate('buttonBonkBuy')}
             backgroundcolor={variables.discordColor}
           />
+
+          <Button
+            link={`https://t.me/Lockinvideouploader_bot`}
+            icon={<Image src={wtf} alt="Lockin Tiktok Uploader Bot" height={h} />}
+            name={'Lockin Video Uploader'}
+            backgroundcolor={variables.discordColor}
+          />
+
+          <Button
+            link={`https://t.me/USDC2BTC_bot`}
+            icon={<Image src={wtf} alt="USDC2BTC" height={h} />}
+            name={'USDC2BTC Bot'}
+            backgroundcolor={variables.discordColor}
+          />
+
 
           <Button
             link='https://lock.wtf'
