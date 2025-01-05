@@ -13,6 +13,7 @@ import MessengerButton from '../MessengerButton';
 import RSIChart from '../RSIChart';
 import PrisonProgressBar from '../PrisonProgressBar';
 import BotTradingInfo from '../BotTradingInfo';
+import { isWebGLAvailable } from '../../utils/checkWebGL';
 
 const trading = require('../../images/trade.svg');
 const bonkLogo = require('../../images/bonk.svg');
@@ -52,6 +53,7 @@ function getLargerNumber(num1, num2) {
 }
 
 export default function LinkTree() {
+  const [webGLAvailable, setWebGLAvailable] = useState(false);
   const [juppricedata, setJupPriceData] = useState();
   const [oxtickerdata, setOxTickerData] = useState();
   const [oxpricedata, setOxPriceData] = useState();
@@ -69,6 +71,10 @@ export default function LinkTree() {
   const oversoldThreshold = 40;
   const [currentPNL, setCurrentPNL] = useState(0);
   const largestPrisonPopulation = 28500;
+
+  useEffect(() => {
+    setWebGLAvailable(isWebGLAvailable());
+  }, []);
 
   async function fetchData() {
     try {
@@ -317,11 +323,11 @@ export default function LinkTree() {
         <br />
         <MessengerButton promptData={promptData} />
         <br />
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
+        {webGLAvailable && <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
           <Canvas>
             <RainingLockersBackground holders={holderscan?.marketCapOverHolders ?? 10} />
           </Canvas>
-        </div>
+        </div>}
       </Container>
     </Suspense>
   );
