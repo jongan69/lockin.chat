@@ -6,7 +6,7 @@ export async function GET(
     const url = `https://api.ox.fun/v3/tickers?marketCode=LOCKIN-USD-SWAP-LIN`;
 
     try {
-        const response = await fetch(url, { cache: 'no-store' })
+        const response = await fetch(url)
             .then(res => res.json())
         // console.log(response)
         

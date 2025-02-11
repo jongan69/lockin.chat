@@ -256,7 +256,7 @@ export async function GET(request: Request) {
   const url = `https://api.ox.fun/v3/candles?marketCode=${marketCode}&timeframe=${timeframe}&limit=${limit}&startTime=${startTime}&endTime=${endTime}`;
 
   try {
-    const response = await fetch(url, { cache: 'no-store' })
+    const response = await fetch(url)
       .then(res => res.json());
 
     console.log(`Received ${response.data.length} candles from API`);
