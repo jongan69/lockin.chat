@@ -7,7 +7,7 @@ export async function GET(
     const url = `https://api.jup.ag/price/v2?ids=${address}&showExtraInfo=true`;
 
     try {
-        const response = await fetch(url, { cache: 'no-store' })
+        const response = await fetch(url)
             .then(res => res.json())
         // console.log(response)
         const price = response.data[address].price;
