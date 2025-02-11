@@ -4,13 +4,20 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Lockin Chat",
-  description: "Lock tf in",
-  icons: {
-    icon: "/profile.png",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const price = await fetch('https://lockin.chat/api/price', { 
+    cache: 'no-store',
+    next: { revalidate: 60 } // Revalidate every 60 seconds
+  }).then(res => res.json());
+
+  return {
+    title: `Lockin ${price.uiFormmatted || ''}`,
+    description: "Lock Chat",
+    icons: {
+      icon: "/profile.png",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

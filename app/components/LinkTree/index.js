@@ -36,14 +36,12 @@ function formatNumberWithSuffix(number) {
   }
 
   const num = parseFloat(number);
-  if (num >= 1e15) {
-    return (num / 1e15).toFixed(2) + 'M';
-  } else if (num >= 1e12) {
-    return (num / 1e12).toFixed(2) + 'K';
-  } else if (num >= 1e9) {
-    return (num / 1e9).toFixed(2) + '';
+  if (num >= 1e9) {
+    return (num / 1e9).toFixed(2) + 'B';
   } else if (num >= 1e6) {
-    return (num / 1e3).toFixed(2) + '';
+    return (num / 1e6).toFixed(2) + 'M';
+  } else if (num >= 1e3) {
+    return (num / 1e3).toFixed(2) + 'K';
   }
   return num.toFixed(2);
 }
@@ -68,6 +66,7 @@ export default function LinkTree() {
   const [rsiData, setRsiData] = useState([]);
   const [rsiLabels, setRsiLabels] = useState([]);
   const [lsiData, setLsiData] = useState([]);
+  const [dexscreenerdata, setDexScreenerData] = useState();
   const oversoldThreshold = 40;
   const [currentPNL, setCurrentPNL] = useState(0);
   const largestPrisonPopulation = 28500;
@@ -84,14 +83,16 @@ export default function LinkTree() {
         oxpricedata,
         heliusholderdata,
         holderscandata,
-        oxcandleresponse
+        oxcandleresponse,
+        dexscreenerresponse
       ] = await Promise.all([
         fetch('/api/price', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/oxtickerdata', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/oxpricedata', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/heliusmarketdata', { cache: 'no-store' }).then(res => res.json()),
         fetch('/api/holderscan', { cache: 'no-store' }).then(res => res.json()),
-        fetch('/api/oxcandledata', { cache: 'no-store' }).then(res => res.json())
+        fetch('/api/oxcandledata', { cache: 'no-store' }).then(res => res.json()),
+        fetch('/api/dexscreener', { cache: 'no-store' }).then(res => res.json())
       ]);
 
       setJupPriceData(pricedata);
@@ -99,7 +100,7 @@ export default function LinkTree() {
       setOxPriceData(oxpricedata);
       setHolderData(heliusholderdata);
       setHolderScan(holderscandata);
-
+      setDexScreenerData(dexscreenerresponse);
       if (oxcandleresponse) {
         setOxCandleResponse(oxcandleresponse);
         setCurrentRsi(oxcandleresponse?.rsi[oxcandleresponse?.rsi?.length - 1]);
@@ -122,7 +123,7 @@ export default function LinkTree() {
       } else if (heliusholderdata?.totalHolders) {
         setTotalHolders(heliusholderdata.totalHolders);
       }
-
+      console.log('holderscandata', holderscandata);
       setPromptData({
         language: language || 'en',
         candledata: oxcandleresponse.candles,
@@ -203,10 +204,10 @@ export default function LinkTree() {
           {/* <p>{JSON.stringify(oxcandleresponse) || 'N/A'}</p> */}
           <br />
           <p>{translate('totalLockers')}: {totalholders?.toLocaleString() || 'N/A'}</p>
-          <p>{translate('totalJeets')}: {getLargerNumber(holderdata?.RetardedAssJeetFaggots, holderscan?.totalSellers)?.toLocaleString() || 'N/A'}</p>
-          <p>{translate('holdersOver10USD')}: {holderscan?.holdersOver10USD?.toLocaleString() || 'N/A'}</p>
-          <p>{translate('marketCap')}: ${holderscan?.marketCap?.toLocaleString() || 'N/A'}</p>
-          <p>{translate('supply')}: {formatNumberWithSuffix(holderscan?.supply)} LOCKINS</p>
+          <p>{translate('totalJeets')}: {holderdata?.RetardedAssJeetFaggots.toLocaleString() || 'N/A'}</p>
+          <p>{translate('marketCap')}: ${formatNumberWithSuffix(dexscreenerdata?.marketCap) || 'N/A'}</p>
+          <p>{translate('supply')}: {formatNumberWithSuffix(dexscreenerdata?.circulatingSupply)} LOCKINS</p>
+          <p>{translate('fullyDilutedValue')}: ${formatNumberWithSuffix(dexscreenerdata?.fdv)}</p>
           <br />
           <p>{translate('jupiterPrice')}: {juppricedata?.uiFormmatted || 'N/A'}</p>
           <p>{translate('oxPrice')}: {oxtickerdata?.uiFormmatted || 'N/A'}</p>
@@ -237,17 +238,21 @@ export default function LinkTree() {
           )}
 
           <br />
-          <BotTradingInfo
-            pnl={currentPNL}
-            positions={oxcandleresponse?.trading?.positions}
-            translate={translate}
-          />
+
+          {oxcandleresponse?.trading?.positions.length > 0 &&
+            <BotTradingInfo
+              pnl={currentPNL}
+              positions={oxcandleresponse?.trading?.positions}
+              translate={translate}
+            />
+          }
 
           {totalholders && <PrisonProgressBar
             totalHolders={totalholders}
             largestPrisonPopulation={largestPrisonPopulation}
             translate={translate}
-          />}
+          />
+          }
           <br />
 
           <Button
