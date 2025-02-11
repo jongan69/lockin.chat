@@ -19,7 +19,7 @@ export async function getJupiterPrice() {
         }
 
     } catch (error: any) {
-        console.error(`Error fetching price data: ${error}`);
+        console.error(`Error fetching jupiter price data: ${error}`);
         return { price: 0, uiFormmatted: `$${0}` };
     }
 }

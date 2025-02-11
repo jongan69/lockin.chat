@@ -21,7 +21,7 @@ export async function GET(
             return Response.json({ price: 0, uiFormmatted: `$${0}`});
         }
     } catch (error: any) {
-        console.error(`Error fetching price data: ${error}`);
+        console.error(`Error fetching jupiter price data: ${error}`);
         return Response.json({ error: 'failed to load data' })
     }
 }

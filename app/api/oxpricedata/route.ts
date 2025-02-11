@@ -19,7 +19,7 @@ export async function GET(
         // console.log(`High 24h: ${high24h}, Low 24h: ${low24h}, Volume 24h: ${volume24h}, Currency Volume 24h: ${currencyVolume24h}, Open Interest: ${openInterest}`);
         return Response.json({ high24h, low24h, volume24h, currencyVolume24h, openInterest });
     } catch (error: any) {
-        console.error(`Error fetching price data: ${error}`);
+        console.error(`Error fetching oxpricedata data: ${error}`);
         return Response.json({ error: 'failed to load data' })
     }
 }

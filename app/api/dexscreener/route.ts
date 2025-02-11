@@ -18,7 +18,7 @@ export async function GET() {
         // console.log(`High 24h: ${high24h}, Low 24h: ${low24h}, Volume 24h: ${volume24h}, Currency Volume 24h: ${currencyVolume24h}, Open Interest: ${openInterest}`);
         return Response.json({ maxSupply, totalSupply, circulatingSupply, fdv, marketCap });
     } catch (error: any) {
-        console.error(`Error fetching price data: ${error}`);
+        console.error(`Error fetching dexscreener data: ${error}`);
         return Response.json({ error: 'failed to load data' })
     }
 }

@@ -15,7 +15,7 @@ export async function GET(
 
         return Response.json({ upperprice, lowerprice, marketprice, uiFormmatted: `$${marketprice.toFixed(6)}`});
     } catch (error: any) {
-        console.error(`Error fetching price data: ${error}`);
+        console.error(`Error fetching oxtickerdata data: ${error}`);
         return Response.json({ error: 'failed to load data' })
     }
 }

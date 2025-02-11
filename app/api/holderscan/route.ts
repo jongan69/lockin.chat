@@ -16,7 +16,7 @@ export async function GET(
         const holdersOver10USD = response?.data?.holdersOver10USD;
         return Response.json({ currentHolders, supply, marketCap, marketCapOverHolders, holdersOver10USD, totalSellers });
     } catch (error: any) {
-        console.error(`Error fetching price data: ${error}`);
+        console.error(`Error fetching holderscan data: ${error}`);
         return Response.json({ error: 'failed to load data' })
     }
 }
