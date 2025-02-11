@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { getJupiterPrice } from "./utils/getJupiterPrice";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const price = await fetch('https://lockin.chat/api/price', { 
-    cache: 'no-store',
-    next: { revalidate: 60 } // Revalidate every 60 seconds
-  }).then(res => res.json());
+  const price = await getJupiterPrice()
 
   return {
     title: `Lockin ${price.uiFormmatted || ''}`,
