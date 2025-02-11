@@ -5,8 +5,8 @@ export async function GET() {
 
     try {
         const [latestData, pairData] = await Promise.all([
-            fetch(latestUrl, { cache: 'no-store' }).then(res => res.json()),
-            fetch(pairUrl, { cache: 'no-store' }).then(res => res.json())
+            fetch(latestUrl).then(res => res.json()),
+            fetch(pairUrl).then(res => res.json())
         ]);
 
         const maxSupply = pairData.cg.maxSupply;
